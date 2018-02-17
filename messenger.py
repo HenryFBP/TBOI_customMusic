@@ -28,7 +28,7 @@ def startServer():
 
 
 try:
-    r = requests.post(f'http://{_host}:{str(_port)}', _message)
+    r = requests.post(f'http://{_host}:{str(_port)}/post/', data={"room":_message})
 
     print(f"Sent '{_message}' to '{_host}:{str(_port)}'")
 

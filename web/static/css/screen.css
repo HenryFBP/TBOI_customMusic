@@ -1,0 +1,31 @@
+html {
+}
+
+p {
+  padding-left: 1em;
+}
+
+h1 {
+  text-align: center;
+}
+
+body {
+
+}
+
+main {
+  display: grid;
+  grid-column-gap: 1em;
+}
+
+#info {
+  background-color: #a5a5a5;
+  grid-column: 1;
+}
+
+#log {
+  grid-column: 2;
+  height: 100%;
+  background-color: black;
+  color: white;
+}
