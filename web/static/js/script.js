@@ -1,3 +1,5 @@
+
+
 $(document).ready(function() //when document loads
 {
   var host = "localhost";
@@ -7,13 +9,83 @@ $(document).ready(function() //when document loads
 
   $('#nojs').hide(); //don't show 'WHY NO JS??' msg
 
-  function wrap(elt, tag)
+  /***
+    * Takes an `elt` and wraps it with `tag`.
+    * Also works with classes and ids.
+    */
+  function wrap(elt, tag, clas, id)
   {
-    if((typeof(elt) === typeof(tag)) && (typeof(tag) === typeof("")))
+    clas = clas || null;
+    id = id || null;
+
+  var s = '';
+
+    if(elt)
     {
-      return ("<"+tag+">"+elt+"</"+tag+">");
+      if(tag)
+      {
+        s += ("<"+tag);
+      }
+
+      if(clas)
+      {
+        s += (' class="'+clas+'"');
+      }
+
+      if(id)
+      {
+        s += (' id="'+id+'"');
+      }
+
+      if(tag)
+      {
+        s += (">");
+      }
+
+      s += elt;
+
+      if(tag)
+      {
+        s += ("</"+tag+">");
+      }
     }
+
+    return s;
   }
+
+  /***
+    * Callback for when the music.json loads.
+    */
+  function generateMusicList(data)
+  {
+      console.log("Data: ");
+      console.log(data);
+
+      var musicList = JSON.parse(data);
+
+      console.log("JSON-ed data:");
+      console.log(musicList);
+
+      var path = musicList.path;
+
+      console.log("path is: '"+path+"'.");
+
+      var i = 0;
+
+      for(var roomName in musicList.rooms)
+      {
+        var room = {[roomName] : musicList.rooms[roomName]};
+
+        console.log(i+"th room:");
+        console.log(room);
+
+        $('#music>ul').append(roomToElt(room));
+
+        i++;
+      }
+      return;
+  }
+
 
   /***
     * Turn a single room into an HTML element.
@@ -32,7 +104,7 @@ $(document).ready(function() //when document loads
 
       for(var i = 0; i<room[roomName].length; i++)
       {
-        roomList += wrap(room[roomName][i], 'li') + '\n';
+        roomList += wrap(room[roomName][i], 'li', room[roomName][i]) + '\n';
       }
 
       roomList = wrap(roomList, 'ul');
@@ -41,7 +113,7 @@ $(document).ready(function() //when document loads
     console.log("List of rooms: ")
     console.log(roomList);
 
-    e = wrap((e + roomList), 'li')
+    e = wrap((e + roomList), 'li', roomName);
 
     console.log("Returning this:")
     console.log(e)
@@ -54,35 +126,7 @@ $(document).ready(function() //when document loads
   $.ajax({
     url: musicPath,
     type: "GET",
-    success: function(data) {
-
-      console.log("GET of "+musicPath+" succeeded!");
-      console.log("Data: ");
-      console.log(data);
-
-      var musicList = JSON.parse(data);
-
-      console.log("JSON-ed data:");
-      console.log(musicList);
-
-      var path = musicList.path;
-
-      console.log("path is: '"+path+"'.");
-
-      var i = 0;
-      for(var roomName in musicList.rooms)
-      {
-        var room = {[roomName] : musicList.rooms[roomName]};
-
-        console.log(i+"th room:");
-        console.log(room);
-
-        $('#music>ul').append(roomToElt(room))
-
-        i++;
-      }
-
-    },
+    success: generateMusicList,
   });
 
 });
