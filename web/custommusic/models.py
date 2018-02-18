@@ -16,7 +16,17 @@ class RoomEntry(models.Model):
     time = models.IntegerField(default=rightnow)
 
     def __str__(self):
-        return f"[{id:3} @ {time:10}]: {type} "
+        return f"[{id} @ {time}]: {type} "
+
+    def as_dict(self):
+        return {
+            "id": self.id,
+            "type": self.type,
+            "time": self.time,
+        }
+
+    def as_json(self):
+        return "GO AWAY IM NOT IMPLEMENTED YET >:("
 
 
 

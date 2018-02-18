@@ -2,15 +2,15 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+from os.path import relpath
+
+from custommusic.models import *
+from django.conf import settings
 from django.http import *
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import *
 from django.views.decorators.http import *
-from django.conf import settings
-from django.conf.urls.static import static
-from os.path import relpath
-
-from custommusic.models import *
+import json
 
 
 # Create your views here.
@@ -23,10 +23,10 @@ def index(request: HttpRequest):
 
     return HttpResponse(t.content)
 
+
 # music XML file
 def music(request: HttpRequest):
-
-    music_loc = settings.STATIC_URL+'music.json'
+    music_loc = settings.STATIC_URL + 'music.json'
     music_loc = relpath(music_loc, "/")
 
     print("Sending music.json file!")
@@ -37,8 +37,30 @@ def music(request: HttpRequest):
 
 
 # to ask if we should change songs
-def should_change(request: HttpRequest):
-    pass
+def query(request: HttpRequest):
+    print("Being asked if we should change songs.")
+
+    all_rooms = RoomEntry.objects.all()
+
+    print("All room changes: ")
+    print(repr(all_rooms))
+
+    if all_rooms.count() <= 0:
+        print("No changes. Returning '0'.")
+        return HttpResponse('0')
+
+    print("Changes were detected! Sending ALL previous rooms visited...")
+
+    dicts = [obj.as_dict() for obj in all_rooms]
+    jsondata = json.dumps({"data": dicts})
+
+    print("Returning this:")
+    print(jsondata)
+
+    RoomEntry.objects.all().delete() # delete ALL rooms because we sent it to browser
+    print("Deleted all room visits.")
+
+    return HttpResponse(jsondata, content_type="application/json")
 
 
 # POST from isaac client

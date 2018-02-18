@@ -26,6 +26,7 @@ urlpatterns = [
     path('', views.index, name='index'),
     path('post/', views.post, name='post'), # we are changing rooms!
     path('music/', views.music, name='music'), #we want to get a list of music!
+    path('query/', views.query, name='query'), # we want to know if we should switch songs
 
     # path('templates/', TemplateView.as_view(template_name="templates/test_template.html")),
 ]

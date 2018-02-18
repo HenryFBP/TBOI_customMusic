@@ -40,3 +40,19 @@ main {
   background-color: black;
   color: white;
 }
+
+#poll {
+  display: grid;
+  background-color: #3c3c3c;
+}
+
+code.center {
+  text-align: center;
+  display: block;
+  background-color: #2f4f4f;
+}
+
+#log > ol {
+    display: flex;
+    flex-direction: column-reverse;
+}
