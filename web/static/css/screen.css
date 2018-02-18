@@ -17,6 +17,15 @@ body {
   cursor: progress;
 }
 
+.boring {
+  background-color: gray;
+}
+
+.exciting {
+  background-color: pink;
+  color: black;
+}
+
 button {
   border-width: 2px;
 }
@@ -32,6 +41,7 @@ main {
   display: grid;
   grid-column-gap: 1em;
   grid-row-gap: 1em;
+  grid-template-rows: auto 1fr;
 }
 
 #info {

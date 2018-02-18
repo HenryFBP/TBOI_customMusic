@@ -178,10 +178,15 @@ String.prototype.replaceAll = function(search, replacement) {
     */
   function manual_poll(data)
   {
-          // log it
-        $('#log>ol').append(wrap(now(), 'li'));
+        var logEntry = "";
+        var classMod = "boring"
 
-        dataString = JSON.stringify(data).replaceAll(',',', ')
+        // add when we clicked and that it was manual
+        logEntry += wrap((unixSecondsToString(now()) + " (manual poll)"),'p');
+
+        // format so it wraps
+        dataString = JSON.stringify(data).replaceAll(',',', ');
+        dataString = dataString.replaceAll('}, ', '}, <br/>');
 
         // add it to our lil debug view.
         $('#poll>section').html(wrap(dataString,'code', 'center'));
@@ -189,7 +194,12 @@ String.prototype.replaceAll = function(search, replacement) {
         // explain cryptic '0' to users
         if(data === '0')
         {
-            $('#poll>section').append(wrap('(This means no new rooms seen.)','p'))
+            $('#poll>section').append(wrap('(This means no new rooms seen.)','p'));
+            logEntry += wrap("'"+data+"', aka 'no new rooms seen'.",'p');
+        }
+        else
+        {
+            classMod = 'exciting';
         }
 
         lastAsked = wrap(unixSecondsToString(now()),'code');
@@ -200,6 +210,11 @@ String.prototype.replaceAll = function(search, replacement) {
 
         $('#poll>section').append(ts);
 
+        // log it into server log
+        $('#log>ol').append(wrap(logEntry, 'li', classMod));
+
+        console.log("Data from manual poll:");
+        console.log(data);
     }
 
   /***
