@@ -13,6 +13,17 @@ body {
   background-color: lavender;
 }
 
+.wait:hover {
+  cursor: progress;
+}
+
+button[wait],
+button.wait {
+    color: #999;
+    background: #DDD;
+    border: 1px solid #CCC;
+}
+
 main {
   display: grid;
   grid-column-gap: 1em;

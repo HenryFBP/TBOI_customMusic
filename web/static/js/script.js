@@ -168,6 +168,36 @@ $(document).ready(function() //when document loads
       return;
   }
 
+  /***
+    * Callback for manual poll button.
+    */
+  function manual_poll(data)
+  {
+          // log it
+        $('#log>ol').append(wrap(now(), 'li'));
+
+        // add it to our lil debug view.
+        $('#poll>section').html(wrap(data,'code', 'center'));
+
+        // explain cryptic '0' to users
+        if(data === '0')
+        {
+            $('#poll>section').append(wrap('(This means no new rooms seen.)','p'))
+        }
+
+        lastAsked = wrap(unixSecondsToString(now()),'code');
+
+        console.log("lastAsked: "+lastAsked);
+
+        ts = wrap(('as of '+lastAsked),'p');
+
+        console.log("ts: "+ts);
+
+        $('#poll>section').append(ts);
+
+    }
+
+
 
   /***
     * Turn a single room into an HTML element.
@@ -218,34 +248,23 @@ $(document).ready(function() //when document loads
   // someone wants to poll manually
   $('#poll>button').on('click', function(event){
 
+    // tell em to stop clickin.
+    $('#poll>button').addClass('wait');
+
+    var ungrey = function(data) {$('#poll>button').removeClass('wait');};
+
     $.ajax({
       url: pollPath,
       type: "GET",
       success: function(data) {
-
-        // log it
-        $('#log>ol').append(wrap(now(), 'li'));
-
-        // add it to our lil debug view.
-        $('#poll>section').html(wrap(data,'code', 'center'));
-
-        // explain cryptic '0' to users
-        if(data === '0')
-        {
-            $('#poll>section').append(wrap('(This means no new rooms seen.)','p'))
-        }
-
-        lastAsked = wrap(unixSecondsToString(now()),'code');
-
-        console.log("lastAsked: "+lastAsked);
-
-        ts = wrap(('as of '+lastAsked),'p');
-
-        console.log("ts: "+ts);
-
-        $('#poll>section').append(ts);
-
-
+          manual_poll(data);
+          ungrey(data)
+      },
+      done: function(data) {
+        ungrey(data)
+      },
+      fail: function(data) {
+        ungrey(data)
       },
     });
   });
