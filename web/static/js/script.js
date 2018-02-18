@@ -3,6 +3,11 @@
 $(document).ready(function() //when document loads
 {
 
+String.prototype.replaceAll = function(search, replacement) {
+    var target = this;
+    return target.split(search).join(replacement);
+};
+
 // Date.prototype.format() - By Chris West - MIT Licensed
 (function() {
   var D = "Sunday,Monday,Tuesday,Wednesday,Thursday,Friday,Saturday".split(","),
@@ -176,8 +181,10 @@ $(document).ready(function() //when document loads
           // log it
         $('#log>ol').append(wrap(now(), 'li'));
 
+        dataString = JSON.stringify(data).replaceAll(',',', ')
+
         // add it to our lil debug view.
-        $('#poll>section').html(wrap(data,'code', 'center'));
+        $('#poll>section').html(wrap(dataString,'code', 'center'));
 
         // explain cryptic '0' to users
         if(data === '0')
@@ -186,18 +193,14 @@ $(document).ready(function() //when document loads
         }
 
         lastAsked = wrap(unixSecondsToString(now()),'code');
-
-        console.log("lastAsked: "+lastAsked);
+//        console.log("lastAsked: "+lastAsked);
 
         ts = wrap(('as of '+lastAsked),'p');
-
-        console.log("ts: "+ts);
+//        console.log("ts: "+ts);
 
         $('#poll>section').append(ts);
 
     }
-
-
 
   /***
     * Turn a single room into an HTML element.
@@ -243,6 +246,7 @@ $(document).ready(function() //when document loads
 
   // poll the server continually for new DB entries
   $.ajax({
+  //jk not done
   });
 
   // someone wants to poll manually
