@@ -17,11 +17,15 @@ body {
   cursor: progress;
 }
 
+button {
+  border-width: 2px;
+}
+
 button[wait],
 button.wait {
     color: #999;
     background: #DDD;
-    border: 1px solid #CCC;
+    border: 2px solid #CCC;
 }
 
 main {
