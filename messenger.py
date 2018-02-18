@@ -24,7 +24,9 @@ print(f"Sending message '{_message}'")
 
 
 def startServer():
-    return os.popen(f'cmd /K start {_runt} "{_scriptPath + _serverScript}" runserver {_host}:{_port}')
+    command = f'cmd /K start {_runt} "{_scriptPath + _serverScript}" runserver {_host}:{_port}'
+    print(f"Command: '{command}'")
+    return os.popen(command)
 
 
 try:
@@ -32,7 +34,10 @@ try:
 
     print(f"Sent '{_message}' to '{_host}:{str(_port)}'")
 
-    print(r.status_code, r.reason)
+    print(r.status_code)
+
+    r.close()
+    sys.exit(1)
 
 except Exception as e:
     print(f'I\'m going to assume that the "{_modName}" server is NOT running, so I\'m going to start it.')
@@ -43,3 +48,4 @@ except Exception as e:
 # except Exception as e:
 #     print("Unhandled exception:")
 #     print(e)
+

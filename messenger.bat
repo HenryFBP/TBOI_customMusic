@@ -1,5 +1,8 @@
-@ECHO OFF
+@ECHO ON
 
-cmd /K py messenger.py %*
+ECHO Hi. We were passed: %*
+ECHO Current .BAT dir: %~dp0
 
-PAUSE
+START /MIN "" py "%~dp0messenger.py" %*
+
+EXIT
