@@ -24,6 +24,8 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     path('', views.index, name='index'),
-    # path('templates/', TemplateView.as_view(template_name="templates/test_template.html")),
     path('post/', views.post, name='post'), # we are changing rooms!
+    path('music/', views.music, name='music'), #we want to get a list of music!
+
+    # path('templates/', TemplateView.as_view(template_name="templates/test_template.html")),
 ]

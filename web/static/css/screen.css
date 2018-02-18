@@ -10,21 +10,32 @@ h1 {
 }
 
 body {
-
+  background-color: lavender;
 }
 
 main {
   display: grid;
   grid-column-gap: 1em;
+  grid-row-gap: 1em;
 }
 
 #info {
   background-color: #a5a5a5;
+  grid-row: 1;
+  grid-column: 1;
+}
+
+#music {
+  background-color: #cbddf9;
+  grid-row: 2;
   grid-column: 1;
 }
 
 #log {
+  grid-row-start: 1;
+  grid-row-end: 3;
   grid-column: 2;
+
   height: 100%;
   background-color: black;
   color: white;

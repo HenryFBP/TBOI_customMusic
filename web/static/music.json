@@ -1,0 +1,32 @@
+{
+  "path": "media",
+  "rooms": {
+    "ROOM_NULL": [],
+    "ROOM_DEFAULT": [
+      "hello.mp3"
+    ],
+    "ROOM_SHOP": [
+      "shop1.mp3",
+      "shop2.mp3"
+    ],
+    "ROOM_ERROR": [],
+    "ROOM_TREASURE": [],
+    "ROOM_BOSS": [],
+    "ROOM_MINIBOSS": [],
+    "ROOM_SECRET": [],
+    "ROOM_SUPERSECRET": [],
+    "ROOM_ARCADE": [],
+    "ROOM_CURSE": [],
+    "ROOM_CHALLENGE": [],
+    "ROOM_LIBRARY": [],
+    "ROOM_SACRIFICE": [],
+    "ROOM_DEVIL": [],
+    "ROOM_ANGEL": [],
+    "ROOM_DUNGEON": [],
+    "ROOM_BOSSRUSH": [],
+    "ROOM_ISAACS": [],
+    "ROOM_BARREN": [],
+    "ROOM_CHEST": [],
+    "ROOM_DICE": []
+  }
+}
