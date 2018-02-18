@@ -4,12 +4,14 @@ from __future__ import unicode_literals
 
 from os.path import relpath
 
+import sys
 from custommusic.models import *
 from django.conf import settings
 from django.http import *
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import *
 from django.views.decorators.http import *
+import logging
 import json
 
 
@@ -26,8 +28,7 @@ def index(request: HttpRequest):
 
 # music XML file
 def music(request: HttpRequest):
-    music_loc = settings.STATIC_URL + 'music.json'
-    music_loc = relpath(music_loc, "/")
+    music_loc = settings.PROJECT_PATH + settings.STATIC_URL + 'music.json'
 
     print("Sending music.json file!")
 
