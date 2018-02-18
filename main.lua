@@ -1,6 +1,16 @@
+--- Custom Music Mod by HenryFBP.
+-- https://github.com/HenryFBP/TBOI_customMusic
+--
+
 --StartDebug()
 
+-- if you see some lines on your screen, set this to 'false'.
 _debug = true
+
+
+function time()
+  return "["..os.clock().."]:"
+end
 
 function table.val_to_str ( v )
   if "string" == type( v ) then
@@ -51,6 +61,10 @@ function script_path()
    return str:match("(.*/)")
 end
 
+function get_cwd()
+  return io.popen"cd":read'*l'
+end
+
 local _name = 'CustomMusic'
 local Mod = RegisterMod(_name, 1)
 local mainModule = {}
@@ -60,16 +74,25 @@ for i=1, 15 do
   _log[i] = "..."
 end
 
-local _path = script_path()
-local _script = 'py'
-local _scriptMessenger = 'messenger.py'
-local _scriptServer = 'web/manage.py'
-local _ticks = 0
+local _moddir = string.gsub(script_path(), [[\]], [[/]])
+local _cwd = string.gsub(get_cwd(), [[\]], [[/]])
+
+local _script =             'py'
+local _scriptMessenger =    'messenger.py'
+local _scriptMessengerBat = 'messenger.bat'
+local _scriptServer =       'web/manage.py'
+
+local _os = "unknown"
+_last_executed = "Nothing last run."
+
+-- detect OS 'cuz we can't run .BAT on macs or linux
+if(string.match(_moddir, [[C:/Users/]]) or string.match(_moddir, [[Documents/My Games/]])) then
+  _os = "windows"
+else
+  _os = "linux or mac"
+end
+
 lastRoomID = nil
-
---local serverLog = start()
-lastSent = 'oh helo'
-
 
 local config = {
   ['XPos']=50,
@@ -97,7 +120,7 @@ end
 -- @return The message that was sent.
 function sendCMD(message, stay)
   stay = stay or false
-  local command = 'py "'.._path.._scriptMessenger..'" '..message
+  local command = 'py "'.. _moddir .._scriptMessenger..'" '..message
   
   if stay then
     command = command .. " & PAUSE"
@@ -111,13 +134,27 @@ end
 -- @param message the message to be sent to the customMusic server.
 -- @return The 
 function send(message)
-  local command = 'py "'.._path.._scriptMessenger..'" '..message
+  local command = nil
+  if _os == [[windows]] then
+--    command = 'cmd /K "'.._moddir.._scriptMessengerBat..'" '..message
+    command = [[cmd /K "]].._moddir.._scriptMessengerBat..[[" ]]..message
+    if _debug then
+--      command = command .. " & PAUSE" --for debug
+    end
+  else
+    command = 'py "'.. _moddir .._scriptMessenger..'" '..message
+  end
+
+  _last_executed = time()..command
 
   local out = os.execute(command)
 
   return out
 end
 
+---
+-- Prints a log line-by-line on the screen.
+-- _log is a simple list of strings.
 function displayLog()
   
   local x = config['XPos']
@@ -148,23 +185,23 @@ function getkeys(t)
   return k
 end
 
-function time()
-  return "["..os.clock().."]:"
-end
-
 function Mod:onRender()
 
   local x = Isaac.GetPlayer(0).Position.X
   local y = Isaac.GetPlayer(0).Position.Y
+  local i = 1
 
-  local s = _name..". x="..x..",y="..y
-  
-  PrintText("spooky text", x, y)
+  local s = _name.." mod. Isaac x="..x..",y="..y
 
-  Log(s, 0)
-    
-  Log(lastSent, 1)
-  
+
+  Log(([[CWD: "]].._cwd..[["]]), i); i=i+1
+  Log(([[Moddir: "]].._moddir..[["]]), i); i=i+1
+
+  Log(s, i); i=i+1
+
+  Log("I think your OS is: ".._os, i); i=i+1
+  Log("last exec: ".._last_executed, i); i=i+1
+
   displayLog()
 --  Isaac.RenderText(lastSent, config["XPos"], config["YPos"]+(2 * config["LineHeight"]), 255, 255, 255, 255)
 end
@@ -173,10 +210,8 @@ function Mod:immortality()
   local p = Isaac.GetPlayer(0)
   p:SetFullHearts()
   
-  Log(time().." got hurt :'(",2)
-  
---  lastSent = "last sent:" .. send("OW!!", true) -- to test our sending features
-  
+  Log(time().." got hurt :'(",13)
+
   
 end
 
