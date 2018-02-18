@@ -140,6 +140,14 @@ String.prototype.replaceAll = function(search, replacement) {
     }
   }
 
+   /***
+     * Called to update the music based on a room.
+     */
+  function updateMusic(room)
+  {
+  }
+
+
   /***
     * Callback for when the music.json loads.
     */
@@ -200,6 +208,8 @@ String.prototype.replaceAll = function(search, replacement) {
         else
         {
             classMod = 'exciting';
+
+            logEntry += wrap(dataString, 'code');
         }
 
         lastAsked = wrap(unixSecondsToString(now()),'code');
