@@ -139,6 +139,13 @@ STATICFILES_DIRS = (
 print("STATICFILES_DIRS: ")
 print(repr(STATICFILES_DIRS))
 
+MEDIA_ROOT = os.path.join(STATICFILES_DIRS[0], "media")
+
+print("MEDIA_ROOT: ")
+print(repr(MEDIA_ROOT))
+
+
+
 # List of finder classes that know how to find static files in
 # various locations.
 STATICFILES_FINDERS = (

@@ -2,17 +2,14 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from os.path import relpath
+import json
 
-import sys
 from custommusic.models import *
 from django.conf import settings
 from django.http import *
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import *
 from django.views.decorators.http import *
-import logging
-import json
 
 
 # Create your views here.
@@ -34,8 +31,24 @@ def music(request: HttpRequest):
 
     return HttpResponse(open(music_loc).read())
 
-    pass
+# they want a song
+def play(request: HttpRequest):
 
+    print("Person wants to play song here:")
+    print("Full path: " + request.get_full_path())
+    print("Absolute URI: " + request.build_absolute_uri())
+
+    path = settings.MEDIA_ROOT + request.get_full_path().split('/')[-1]
+
+    print("Actual path we should use: " + path)
+
+    return StreamingHttpResponse()
+
+# turn off server
+def shutdown(request: HttpRequest):
+
+    print("Someone wants to shut down!")
+    pass
 
 # to ask if we should change songs
 def query(request: HttpRequest):
@@ -58,7 +71,7 @@ def query(request: HttpRequest):
     print("Returning this:")
     print(jsondata)
 
-    RoomEntry.objects.all().delete() # delete ALL rooms because we sent it to browser
+    RoomEntry.objects.all().delete()  # delete ALL rooms because we sent it to browser
     print("Deleted all room visits.")
 
     return HttpResponse(jsondata, content_type="application/json")
