@@ -36,6 +36,32 @@ input[type="checkbox"] {
   color: black;
 }
 
+.playing a {
+  color: white;
+  background-color: black;
+  list-ite
+}
+
+li.playing {
+  color: white;
+  background-color: black;
+}
+
+/* what have i done */
+/* only 1st list item that's '.playing' */
+li.playing > :first-child:before {
+  content: '>';
+}
+
+#music > ul > li.playing {
+  list-style-type: none;
+}
+
+li .playing {
+  color: white;
+  background-color: purple;
+}
+
 button {
   border-width: 2px;
 }
@@ -65,6 +91,11 @@ main {
   background-color: #cbddf9;
   grid-row: 2;
   grid-column: 1;
+}
+
+#music ul li {
+  list-style-position: inside;
+  /* list-style-type:  none; */
 }
 
 #currently-playing {

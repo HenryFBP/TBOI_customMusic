@@ -1,5 +1,5 @@
 
-var _debug = true;
+var _debug = false;
 
 var host = "localhost";
 var port = 8000;
@@ -184,15 +184,18 @@ function isDict(v)
     //random choice...FOR NOW!!!
     var song = songList[Math.floor(Math.random() * songList.length)];
 
-    playSong(song)
+    playSong(song, room)
   }
 
   /***
     * Play a song by name.
+    * Needs 'room' to be able to highlight both correctly.
     */
-  function playSong(songName)
+  function playSong(songName, room)
   {
+
     var path = mediaPath + songName;
+    var songClass = songName.replace(".","_")
 
 //    alert("PLAYIN DIS: '"+songName+"' AT DIS LOC: '"+path+"'.");
 
@@ -200,6 +203,24 @@ function isDict(v)
     {
       var audio_core = $('audio').attr('src', path)[0];
       audio_core.play();
+
+      $($('#currently-playing h2')[0])[0].innerHTML = songName; //display song name
+      $($('#currently-playing p')[0])[0].innerHTML = room.type + " caused this."; //display which room
+
+      $('#music').find("*").removeClass('playing'); //remove 'playing' for ALL others
+
+      var roomElt = $('.'+room.type); //get an li item
+      $(roomElt[0]).addClass('playing'); //show room is playing
+
+      var songElt = roomElt.find('.'+songClass); //get song under it
+
+
+      console.log("Room elt for current song:");
+      console.log(roomElt);
+      console.log("Song elt for current song:");
+      console.log(songElt);
+
+      $($(roomElt[0]).find('.'+songClass)[0]).addClass('playing'); //show which song is playing
     }
 
 
@@ -422,7 +443,9 @@ function poll(data)
 
       for(var i = 0; i<room[roomName].length; i++)
       {
-        roomList += wrap(room[roomName][i], 'li', room[roomName][i]) + '\n';
+        var songClass = room[roomName][i].replace('.','_'); //can't have dots in class names
+
+        roomList += wrap(room[roomName][i], 'li', songClass) + '\n';
       }
 
       roomList = wrap(roomList, 'ul');
