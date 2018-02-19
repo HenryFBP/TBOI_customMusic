@@ -54,10 +54,14 @@ String.prototype.replaceAll = function(search, replacement) {
   var port = 8000;
 
   var musicFile = "music";
-  var musicPath = "http://"+host+":"+port+"/"+musicFile;
+  var musicPath = "http://"+host+":"+port+"/"+musicFile; //to get music.json
 
   var pollFile = 'query';
-  var pollPath = "http://"+host+":"+port+"/"+pollFile;
+  var pollPath = "http://"+host+":"+port+"/"+pollFile; //to ask about what rooms are visited
+
+  var mediaPath = "http://"+host+":"+port+"/";
+
+  var musicJson = {}; //will be updated later.
 
   $('#nojs').hide(); //don't show 'WHY NO JS??' msg
 
@@ -145,6 +149,7 @@ String.prototype.replaceAll = function(search, replacement) {
      */
   function updateMusic(room)
   {
+
   }
 
 
@@ -178,7 +183,7 @@ String.prototype.replaceAll = function(search, replacement) {
 
         i++;
       }
-      return;
+      return musicList;
   }
 
   /***
@@ -262,11 +267,14 @@ String.prototype.replaceAll = function(search, replacement) {
     return e;
   }
 
-  // attempt to GET list of music
+  // attempt to GET music.json
   $.ajax({
     url: musicPath,
     type: "GET",
-    success: generateMusicList,
+    success: function(data){
+      generateMusicList(data);
+      musicJson = JSON.parse(data);
+    },
   });
 
   // poll the server continually for new DB entries

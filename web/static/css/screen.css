@@ -13,6 +13,10 @@ body {
   background-color: lavender;
 }
 
+audio {
+  width: 100%;
+}
+
 .wait:hover {
   cursor: progress;
 }
@@ -56,6 +60,10 @@ main {
   grid-column: 1;
 }
 
+#currently-playing {
+  background-color: #bbbfc3;
+}
+
 #log {
   grid-row-start: 1;
   grid-row-end: 3;
@@ -69,6 +77,23 @@ main {
 #poll {
   display: grid;
   background-color: #3c3c3c;
+}
+
+#poll button {
+    height: 3rem;
+    font-size: 2rem;
+    border-radius: 16px;
+    margin: 10px;
+    box-shadow:
+    inset 0 0 2px 0 rgba(255,255,255,.4),
+    inset 0 0 3px 0 rgba(0,0,0,.4),
+    inset 0 0 3px 5px rgba(0,0,0,.05),
+    2px 2px 4px 0 rgba(0,0,0,.25);
+}
+
+#poll button:not(.wait):hover
+{
+  cursor: pointer;
 }
 
 code.center {

@@ -21,6 +21,15 @@
         <p>Want to <a href="https://github.com/HenryFBP/TBOI_customMusic/issues/new?title=this+guy+smells">report a
             problem?</a></p>
 
+        <section id="currently-playing">
+            <h2>No song currently playing.</h2>
+            <p>No room caused this.</p>
+            <audio controls>
+                <source src="{% static '/media/hello.mp3' %}" type="audio/mpeg">
+                Hi. Your browser doesn't support the &lt;audio&gt; tag.
+            </audio>
+        </section>
+
         <aside id="nojs"> <!-- if they don't have javascript -->
             <p>If you're seeing this, you should:</p>
             <ul>
@@ -50,10 +59,7 @@
 
         <h1>Server Log</h1>
         <ol>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
-            <li>a</li>
+
         </ol>
     </section>
 </main>
