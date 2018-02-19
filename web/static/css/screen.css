@@ -14,7 +14,8 @@ body {
 }
 
 audio {
-  width: 100%;
+  width: -webkit-fill-available;
+  margin: 10px;
 }
 
 .wait:hover {
