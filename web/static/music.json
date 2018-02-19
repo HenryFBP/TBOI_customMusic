@@ -1,7 +1,9 @@
 {
   "path": "media",
   "rooms": {
-    "ROOM_NULL": [],
+    "ROOM_NULL": [
+
+    ],
     "ROOM_DEFAULT": [
       "hello.mp3"
     ],
@@ -9,24 +11,62 @@
       "shop1.mp3",
       "shop2.mp3"
     ],
-    "ROOM_ERROR": [],
-    "ROOM_TREASURE": [],
-    "ROOM_BOSS": [],
-    "ROOM_MINIBOSS": [],
-    "ROOM_SECRET": [],
-    "ROOM_SUPERSECRET": [],
-    "ROOM_ARCADE": [],
-    "ROOM_CURSE": [],
-    "ROOM_CHALLENGE": [],
-    "ROOM_LIBRARY": [],
-    "ROOM_SACRIFICE": [],
-    "ROOM_DEVIL": [],
-    "ROOM_ANGEL": [],
-    "ROOM_DUNGEON": [],
-    "ROOM_BOSSRUSH": [],
-    "ROOM_ISAACS": [],
-    "ROOM_BARREN": [],
-    "ROOM_CHEST": [],
-    "ROOM_DICE": []
+    "ROOM_ERROR": [
+      "error.mp3"
+    ],
+    "ROOM_TREASURE": [
+      "treasure.mp3"
+    ],
+    "ROOM_BOSS": [
+      "boss.mp3"
+    ],
+    "ROOM_MINIBOSS": [
+      "miniboss.mp3"
+    ],
+    "ROOM_SECRET": [
+      "secret.mp3"
+    ],
+    "ROOM_SUPERSECRET": [
+      "supersecret.mp3"
+    ],
+    "ROOM_ARCADE": [
+      "arcade.mp3"
+    ],
+    "ROOM_CURSE": [
+      "curse.mp3"
+    ],
+    "ROOM_CHALLENGE": [
+      "challenge.mp3"
+    ],
+    "ROOM_LIBRARY": [
+      "library.mp3"
+    ],
+    "ROOM_SACRIFICE": [
+      "miniboss.mp3"
+    ],
+    "ROOM_DEVIL": [
+      "sacrifice.mp3"
+    ],
+    "ROOM_ANGEL": [
+      "angel.mp3"
+    ],
+    "ROOM_DUNGEON": [
+      "dungeon.mp3"
+    ],
+    "ROOM_BOSSRUSH": [
+      "bossrush.mp3"
+    ],
+    "ROOM_ISAACS": [
+      "isaacs.mp3"
+    ],
+    "ROOM_BARREN": [
+      "barren.mp3"
+    ],
+    "ROOM_CHEST": [
+      "chest.mp3"
+    ],
+    "ROOM_DICE": [
+      "dice.mp3"
+    ]
   }
 }
