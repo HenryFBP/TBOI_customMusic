@@ -19,12 +19,17 @@
         <h1><a href="https://github.com/HenryFBP/TBOI_customMusic/">TBOI Custom Music Mod!</a></h1>
         <p>Hi there!</p>
         <p>Want to <a href="https://github.com/HenryFBP/TBOI_customMusic/issues/new?title=this+guy+smells">report a
-            problem?</a></p>
+            problem?</a>
+        </p>
+        <p>
+            Tip: To loop, right-click the audio element and click the 'loop' button.
+            Yes, this comment exists because I am too lazy to make a loop.
+        </p>
 
         <section id="currently-playing">
             <h2>No song currently playing.</h2>
             <p>No room caused this.</p>
-            <audio controls>
+            <audio controls preload="none">
                 <source src="{% static '/media/hello.mp3' %}" type="audio/mpeg">
                 Hi. Your browser doesn't support the &lt;audio&gt; tag.
             </audio>

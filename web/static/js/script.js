@@ -59,7 +59,7 @@ String.prototype.replaceAll = function(search, replacement) {
   var pollFile = 'query';
   var pollPath = "http://"+host+":"+port+"/"+pollFile; //to ask about what rooms are visited
 
-  var mediaPath = "http://"+host+":"+port+"/";
+  var mediaPath = "http://"+host+":"+port+"/static/media/";
 
   var musicJson = {}; //will be updated later.
 
@@ -145,10 +145,34 @@ String.prototype.replaceAll = function(search, replacement) {
   }
 
    /***
-     * Called to update the music based on a room.
+     * Called to update the music being played based on a Room object.
      */
-  function updateMusic(room)
+  function updateMusic(room, songs)
   {
+    songs = songs || musicJson;
+
+    var roomType = room["type"];
+
+    var songList = songs["rooms"][roomType];
+
+    //random choice...FOR NOW!!!
+    var song = songList[Math.floor(Math.random() * songList.length)];
+
+    playSong(song)
+  }
+
+  /***
+    * Play a song by name.
+    */
+  function playSong(songName)
+  {
+    var path = mediaPath + songName;
+
+//    alert("PLAYIN DIS: '"+songName+"' AT DIS LOC: '"+path+"'.");
+
+    var audio_core = $('audio').attr('src', path)[0];
+
+    audio_core.play();
 
   }
 
@@ -253,7 +277,7 @@ function mostRecentRoom(data)
         {
             classMod = 'exciting';
 
-            logEntry += wrap(dataString, 'code');
+            logEntry += wrap(wrap(dataString, 'code'),'p');
         }
 
         lastAsked = wrap(unixSecondsToString(now()),'code');
@@ -334,13 +358,18 @@ function mostRecentRoom(data)
       type: "GET",
       success: function(data) {
           manual_poll(data);
-          ungrey(data)
+          ungrey(data);
+          mrr = mostRecentRoom(data);
+          if(mrr)
+          {
+            updateMusic(mrr); //play song based off of most recent room
+          }
       },
       done: function(data) {
-        ungrey(data)
+        ungrey(data);
       },
       fail: function(data) {
-        ungrey(data)
+        ungrey(data);
       },
     });
   });
