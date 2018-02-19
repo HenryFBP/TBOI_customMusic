@@ -153,6 +153,45 @@ String.prototype.replaceAll = function(search, replacement) {
   }
 
 
+/***
+  * Called to get the most recent room out of the list of rooms.
+  * @return The most recent Room object.
+  */
+function mostRecentRoom(data)
+{
+
+  if("data" in data) //if it adheres to my made-up data structure with unnecessary naming schemes
+  {
+    var list = data["data"];
+
+    if(list.length <= 0) //if its empty
+    {
+      return null;
+    }
+
+    else
+    {
+      mostRecentR = list[0];
+      mostRecentTime = mostRecentR["time"];
+
+      //compare em all!!
+
+      for(var i = 0; i < list.length; i++)
+      {
+        if(list[i]["time"] > mostRecentTime)
+        {
+          mostRecentR = list[i];
+          mostRecentTime = mostRecentR["time"];
+        }
+      }
+    }
+
+  }
+
+  return mostRecentR;
+}
+
+
   /***
     * Callback for when the music.json loads.
     */
