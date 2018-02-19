@@ -1,7 +1,27 @@
 
+var _debug = true;
+
+var host = "localhost";
+var port = 8000;
+
+var musicFile = "music";
+var musicPath = "http://"+host+":"+port+"/"+musicFile; //to get music.json
+
+var pollFile = 'query';
+var pollPath = "http://"+host+":"+port+"/"+pollFile; //to ask about what rooms are visited
+
+var mediaPath = "http://"+host+":"+port+"/static/media/";
+
+var musicJson = {}; //will be updated later.
+
+var pollerInterval = null; //will later be setInterval(function(){...}, 1000) or something
+var pollTime = 3000; //poll every THIS MANY milliseconds
+
+
 
 $(document).ready(function() //when document loads
 {
+
 
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
@@ -50,18 +70,7 @@ String.prototype.replaceAll = function(search, replacement) {
   };
 })();
 
-  var host = "localhost";
-  var port = 8000;
 
-  var musicFile = "music";
-  var musicPath = "http://"+host+":"+port+"/"+musicFile; //to get music.json
-
-  var pollFile = 'query';
-  var pollPath = "http://"+host+":"+port+"/"+pollFile; //to ask about what rooms are visited
-
-  var mediaPath = "http://"+host+":"+port+"/static/media/";
-
-  var musicJson = {}; //will be updated later.
 
   $('#nojs').hide(); //don't show 'WHY NO JS??' msg
 
@@ -82,6 +91,20 @@ String.prototype.replaceAll = function(search, replacement) {
     var formatted = t.format("hh:mm:ss A");
     return formatted;
   }
+
+/***
+  * Turn right now's time into a string.
+  */
+function nowToString()
+{
+return unixSecondsToString(now());
+}
+
+
+function isDict(v)
+{
+    return typeof v==='object' && v!==null && !(v instanceof Array) && !(v instanceof Date);
+}
 
 
   /***
@@ -151,6 +174,9 @@ String.prototype.replaceAll = function(search, replacement) {
   {
     songs = songs || musicJson;
 
+    console.log("want to get music for this room: ")
+    console.log(room)
+
     var roomType = room["type"];
 
     var songList = songs["rooms"][roomType];
@@ -170,9 +196,12 @@ String.prototype.replaceAll = function(search, replacement) {
 
 //    alert("PLAYIN DIS: '"+songName+"' AT DIS LOC: '"+path+"'.");
 
-    var audio_core = $('audio').attr('src', path)[0];
+    if(songName != $('audio').attr('src')) //if we're asked to play something DIFFERENT
+    {
+      var audio_core = $('audio').attr('src', path)[0];
+      audio_core.play();
+    }
 
-    audio_core.play();
 
   }
 
@@ -183,8 +212,8 @@ String.prototype.replaceAll = function(search, replacement) {
   */
 function mostRecentRoom(data)
 {
-
-  if("data" in data) //if it adheres to my made-up data structure with unnecessary naming schemes
+//if it adheres to my made-up data structure with unnecessary naming schemes
+  if(isDict(data) && ("data" in data))
   {
     var list = data["data"];
 
@@ -208,11 +237,12 @@ function mostRecentRoom(data)
           mostRecentTime = mostRecentR["time"];
         }
       }
+      return mostRecentR;
     }
 
   }
 
-  return mostRecentR;
+  return null;
 }
 
 
@@ -249,16 +279,96 @@ function mostRecentRoom(data)
       return musicList;
   }
 
+/***
+  * Callback for auto-polling.
+  */
+function poll(data)
+{
+  $('#last-updated code')[0].innerHTML = nowToString();
+
+  if(data != '0')
+  {
+    logData(data, wrap("(auto-poller)",'p'));
+
+    var mrr = mostRecentRoom(data);
+    updateMusic(mrr);
+
+  }
+}
+
+/***
+  * setInterval() polling function.
+  * @param v Be verbose?
+  */
+  function pollIntervalFunction(v)
+  {
+    v = v || _debug;
+
+    if(v)
+    {
+      console.log("Polling interval func...");
+    }
+
+    var r = new XMLHttpRequest();
+
+    r.open("GET", pollPath, false); // false means blocking
+
+
+//    if(v){console.log("pre-block");}
+    r.send(); //I AM THE ONE WHO BLOCKS
+//    if(v){console.log("post-block");}
+
+    var resp = r.response;
+
+    if(v)
+    {
+      console.log("Response from server: ")
+      console.log(resp);
+    }
+
+    if(resp != '0') //autopoll is INTERESTING
+    {
+      resp = JSON.parse(resp);
+
+      if(v)
+      {
+        console.log("Resp isn't boring:");
+        console.log(resp);
+      }
+
+    }
+
+    poll(resp)
+
+    return resp;
+  }
+
+
   /***
     * Callback for manual poll button.
     */
   function manual_poll(data)
   {
+    var note = wrap((unixSecondsToString(now()) + " (manual poll)"),'p');
+
+    logData(data, note, true);
+  }
+
+
+    /***
+      * Log 'data' from the server.
+      * Adds 'extra' to the end of the title.
+      */
+    function logData(data, extra, showempty)
+    {
+    extra = extra || null
+    showempty = showempty || null
+
         var logEntry = "";
         var classMod = "boring"
 
-        // add when we clicked and that it was manual
-        logEntry += wrap((unixSecondsToString(now()) + " (manual poll)"),'p');
+        // add extra data
+        logEntry += extra
 
         // format so it wraps
         dataString = JSON.stringify(data).replaceAll(',',', ');
@@ -268,7 +378,7 @@ function mostRecentRoom(data)
         $('#poll>section').html(wrap(dataString,'code', 'center'));
 
         // explain cryptic '0' to users
-        if(data === '0')
+        if((data === '0') && showempty)
         {
             $('#poll>section').append(wrap('(This means no new rooms seen.)','p'));
             logEntry += wrap("'"+data+"', aka 'no new rooms seen'.",'p');
@@ -318,13 +428,13 @@ function mostRecentRoom(data)
       roomList = wrap(roomList, 'ul');
     }
 
-    console.log("List of rooms: ")
-    console.log(roomList);
+//    console.log("List of rooms: ")
+//    console.log(roomList);
 
     e = wrap((e + roomList), 'li', roomName);
 
-    console.log("Returning this:")
-    console.log(e)
+//    console.log("Returning this:")
+//    console.log(e)
 
 
     return e;
@@ -340,10 +450,39 @@ function mostRecentRoom(data)
     },
   });
 
-  // poll the server continually for new DB entries
-  $.ajax({
-  //jk not done
+  //if we want to continually ask for tracks, then do!
+  if($('#should-poll-box')[0].checked)
+  {
+    pollerInterval = setInterval(pollIntervalFunction, pollTime);
+  }
+  else
+  {
+    //stop it if it exists
+    if(pollerInterval)
+    {
+      clearInterval(pollerInterval);
+    }
+  }
+
+  // someone wants to toggle auto-polling
+  $('#should-poll-box').on('click', function(event) {
+    var c = event.currentTarget.checked;
+
+    //it is checked
+    if(c)
+    {
+      pollerInterval = setInterval(pollIntervalFunction, pollTime);
+    }
+    else
+    {
+      //stop it if it exists
+      if(pollerInterval)
+      {
+        clearInterval(pollerInterval);
+      }
+    }
   });
+
 
   // someone wants to poll manually
   $('#poll>button').on('click', function(event){
@@ -359,10 +498,14 @@ function mostRecentRoom(data)
       success: function(data) {
           manual_poll(data);
           ungrey(data);
-          mrr = mostRecentRoom(data);
-          if(mrr)
+
+          if(data != '0')
           {
+            mrr = mostRecentRoom(data);
+            if(mrr)
+            {
             updateMusic(mrr); //play song based off of most recent room
+            }
           }
       },
       done: function(data) {

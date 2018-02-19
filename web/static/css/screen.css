@@ -18,6 +18,11 @@ audio {
   margin: 10px;
 }
 
+input[type="checkbox"] {
+  width: 30px;
+  height: 30px;
+}
+
 .wait:hover {
   cursor: progress;
 }
@@ -47,6 +52,7 @@ main {
   grid-column-gap: 1em;
   grid-row-gap: 1em;
   grid-template-rows: auto 1fr;
+  grid-template-columns: 1fr 1fr;
 }
 
 #info {
@@ -106,4 +112,15 @@ code.center {
 #log > ol {
     display: flex;
     flex-direction: column-reverse;
+    padding: 0;
+}
+
+#log li {
+  list-style-position: inside;
+  margin: 10px 10px 0 10px;
+}
+
+#log li p:first-child {
+  display: inline;
+  padding: 0;
 }
