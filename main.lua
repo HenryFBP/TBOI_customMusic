@@ -36,7 +36,7 @@ end
 
 -- Disable logging if we're not in debug mode.
 if not settings.logging.debug then
-  Log = function(a, b)
+  Log = function()
     return nil
   end
 else
@@ -48,6 +48,21 @@ else
   Log(([[CWD: "]].._cwd..[["]]), i); i=i+1
   Log(([[Moddir: "]].._moddir..[["]]), i); i=i+1
 end
+
+local Mod = RegisterMod(settings.conf.ModName, 1)
+
+
+local _os = "unknown"
+_last_executed = "Nothing last run."
+
+-- detect OS 'cuz we can't run .BAT on macs or linux
+if(string.match(_moddir, [[C:/Users/]]) or string.match(_moddir, [[Documents/My Games/]])) then
+  _os = "windows"
+else
+  _os = "linux or mac"
+end
+
+lastRoomID = nil
 
 function table.val_to_str ( v )
   if "string" == type( v ) then
@@ -93,25 +108,6 @@ function table.invert(t)
    return s
 end
 
-local Mod = RegisterMod(settings.conf.ModName, 1)
-
-
-
-local _scriptMessenger =    'messenger.py'
-local _scriptMessengerBat = 'messenger.bat'
-
-local _os = "unknown"
-_last_executed = "Nothing last run."
-
--- detect OS 'cuz we can't run .BAT on macs or linux
-if(string.match(_moddir, [[C:/Users/]]) or string.match(_moddir, [[Documents/My Games/]])) then
-  _os = "windows"
-else
-  _os = "linux or mac"
-end
-
-lastRoomID = nil
-
 function PrintText(thing, x, y)
   x = x or settings.logging.XPos
   y = y or settings.logging.YPos+100
@@ -128,7 +124,7 @@ end
 -- @return The message that was sent.
 function sendCMD(message, stay)
   stay = stay or false
-  local command = 'py "'.. _moddir .._scriptMessenger..'" '..message
+  local command = 'py "'.. _moddir ..settings.paths.script_messenger..'" '..message
 
   if stay then
     command = command .. " & PAUSE"
@@ -144,13 +140,13 @@ end
 function send(message)
   local command = nil
   if _os == [[windows]] then
---    command = 'cmd /K "'.._moddir.._scriptMessengerBat..'" '..message
-    command = [[cmd /K "]].._moddir.._scriptMessengerBat..[[" ]]..message
+--    command = 'cmd /K "'.._moddir..settings.paths.script_messenger_bat..'" '..message
+    command = [[cmd /K "]].._moddir..settings.paths.script_messenger_bat..[[" ]]..message
     if settings.logging.debug then
 --      command = command .. " & PAUSE" --for debug
     end
   else
-    command = 'py "'.. _moddir .._scriptMessenger..'" '..message
+    command = 'py "'.. _moddir ..settings.paths.script_messenger..'" '..message
   end
 
   _last_executed = lib.time()..command
@@ -233,7 +229,7 @@ function Mod:roomchange()
   local RoomID = room:GetType()
   local typename = table.invert(RoomType)[RoomID]
 
-    if lastRoomID == nil then -- if this is the first room we've been to
+    if not lastRoomID then -- if this is the first room we've been to
     lastRoomID = RoomID
   end
 
