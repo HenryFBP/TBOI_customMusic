@@ -84,7 +84,7 @@ end
 local _moddir = string.gsub(script_path(), [[\]], [[/]])
 local _cwd = string.gsub(get_cwd(), [[\]], [[/]])
 
-settings = dofile(_moddir..'settings.lua')
+local settings = dofile(_moddir..'settings.lua')
 
 local _script =             'py'
 local _scriptMessenger =    'messenger.py'
@@ -103,15 +103,9 @@ end
 
 lastRoomID = nil
 
-local config = {
-  ['XPos']=50,
-  ['YPos']=30,
-  ['LineHeight']=10
-}
-
 function PrintText(thing, x, y)
-  x = x or config['XPos']
-  y = y or config['YPos']+100
+  x = x or settings.logging['XPos']
+  y = y or settings.logging['YPos']+100
 
   Isaac.RenderText(thing, x, y, 255, 255, 255, 255)
 end
@@ -166,15 +160,15 @@ end
 -- _log is a simple list of strings.
 function displayLog()
 
-  local x = config['XPos']
-  local y = config['YPos']
+  local x = settings.logging['XPos']
+  local y = settings.logging['YPos']
 
   for i=1, #_log do
 
     local line = _log[i]
 
-    x = config['XPos']
-    y = config['YPos']+(i * config['LineHeight'])
+    x = settings.logging['XPos']
+    y = settings.logging['YPos']+(i * settings.logging['LineHeight'])
 
     PrintText(line, x, y)
 
@@ -216,7 +210,7 @@ function Mod:onRender()
 --  Log("settings.paths: "..table.tostring(settings.paths)); i=i+1
 
   displayLog()
---  Isaac.RenderText(lastSent, config["XPos"], config["YPos"]+(2 * config["LineHeight"]), 255, 255, 255, 255)
+--  Isaac.RenderText(lastSent, settings.logging["XPos"], settings.logging["YPos"]+(2 * settings.logging["LineHeight"]), 255, 255, 255, 255)
 end
 
 function Mod:immortality()

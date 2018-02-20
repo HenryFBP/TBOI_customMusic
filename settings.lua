@@ -10,8 +10,12 @@
 local settings = {}
 
 settings.logging = {
-    ['debug'] = true
+    ['debug']=true,
+    ['XPos']=50,
+    ['YPos']=30,
+    ['LineHeight']=10
 }
+
 
 settings.paths = {
     ['runtime'] = 'py',
