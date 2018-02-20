@@ -43,7 +43,7 @@ Yes, yes you do.
 
 ## If I make this into a twitch app will you sue me?
 
-No liscense, do whatever you want with it.
+No license, do whatever you want with it.
 
 Sorry if it blows up.
 
