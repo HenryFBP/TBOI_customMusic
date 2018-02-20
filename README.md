@@ -2,6 +2,12 @@
 
 Mod for The Binding Of Isaac: Afterbirth+ that allows custom music.
 
+TL;DR:
+
+You make a list of songs,
+turn off the game's music,
+and listen to your music through a web interface.
+Songs change when room types change.
 
 ## How does it work?
 
