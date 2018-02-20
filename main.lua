@@ -6,7 +6,7 @@
 --StartDebug()
 
 -- if you see some lines on your screen, set this to 'false'.
-settings.logging.debug = true
+_debug = true
 
 function dofile (filename)
   local f = assert(loadfile(filename))
@@ -147,7 +147,7 @@ function send(message)
   if _os == [[windows]] then
 --    command = 'cmd /K "'.._moddir.._scriptMessengerBat..'" '..message
     command = [[cmd /K "]].._moddir.._scriptMessengerBat..[[" ]]..message
-    if settings.logging.debug then
+    if _debug then
 --      command = command .. " & PAUSE" --for debug
     end
   else
@@ -165,32 +165,32 @@ end
 -- Prints a log line-by-line on the screen.
 -- _log is a simple list of strings.
 function displayLog()
-  
+
   local x = config['XPos']
   local y = config['YPos']
-  
+
   for i=1, #_log do
 
     local line = _log[i]
-    
+
     x = config['XPos']
     y = config['YPos']+(i * config['LineHeight'])
-    
+
     PrintText(line, x, y)
-    
+
   end
-  
+
 end
 
 function getkeys(t)
   local klst = {}
   local i = 1
-  
+
   for key, value in pairs(t) do
     klst[i] = key
     i = i + 1
   end
-  
+
   return k
 end
 
@@ -210,37 +210,36 @@ function Mod:onRender()
 
   Log("I think your OS is: ".._os, i); i=i+1
   Log("last exec: ".._last_executed, i); i=i+1
-  Log(_moddir..'settings', i); i=i+1
-  Log('settings: '..table.tostring(settings), i); i=i+1
---  Log("settings.test: "..settings:test()); i=i+1
+  Log('settings'.._moddir, i); i=i+1
+  Log(table.tostring(settings), i); i=i+1
+--  Log("settings.test: "..settings.test()); i=i+1
 --  Log("settings.paths: "..table.tostring(settings.paths)); i=i+1
-  if settings.logging.debug then
-    displayLog()
-  end
+
+  displayLog()
 --  Isaac.RenderText(lastSent, config["XPos"], config["YPos"]+(2 * config["LineHeight"]), 255, 255, 255, 255)
 end
 
 function Mod:immortality()
   local p = Isaac.GetPlayer(0)
   p:SetFullHearts()
-  
+
   Log(time().." got hurt :'(",13)
 
-  
+
 end
 
 --- Called to tell the server we changed rooms.
 function Mod:roomchange()
   local i = 6
-  
+
   local room = Game():GetRoom()
   local RoomID = room:GetType()
   local typename = table.invert(RoomType)[RoomID]
-  
+
     if lastRoomID == nil then -- if this is the first room we've been to
     lastRoomID = RoomID
   end
-  
+
   Log(time().."Room type we just entered: "..RoomID.." aka "..table.invert(RoomType)[RoomID],i)
   i=i+1
   
