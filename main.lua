@@ -5,17 +5,20 @@
 
 --StartDebug()
 
--- if you see some lines on your screen, set this to 'false'.
-_debug = true
-
 function dofile (filename)
   local f = assert(loadfile(filename))
   return f()
 end
 
-function time()
-  return "["..os.clock().."]:"
+function script_path()
+   local str = debug.getinfo(2, "S").source:sub(2)
+   return str:match("(.*/)")
 end
+
+function get_cwd()
+  return io.popen"cd":read'*l'
+end
+
 
 function table.val_to_str ( v )
   if "string" == type( v ) then
@@ -61,14 +64,8 @@ function table.invert(t)
    return s
 end
 
-function script_path()
-   local str = debug.getinfo(2, "S").source:sub(2)
-   return str:match("(.*/)")
-end
 
-function get_cwd()
-  return io.popen"cd":read'*l'
-end
+
 
 local _name = 'CustomMusic'
 local Mod = RegisterMod(_name, 1)
@@ -85,8 +82,8 @@ local _moddir = string.gsub(script_path(), [[\]], [[/]])
 local _cwd = string.gsub(get_cwd(), [[\]], [[/]])
 
 local settings = dofile(_moddir..'settings.lua')
+local lib = dofile(_moddir..'lib.lua')
 
-local _script =             'py'
 local _scriptMessenger =    'messenger.py'
 local _scriptMessengerBat = 'messenger.bat'
 local _scriptServer =       'web/manage.py'
@@ -104,8 +101,8 @@ end
 lastRoomID = nil
 
 function PrintText(thing, x, y)
-  x = x or settings.logging['XPos']
-  y = y or settings.logging['YPos']+100
+  x = x or settings.logging.XPos
+  y = y or settings.logging.YPos+100
 
   Isaac.RenderText(thing, x, y, 255, 255, 255, 255)
 end
@@ -135,20 +132,20 @@ end
 
 --- send sends a command silently.
 -- @param message the message to be sent to the customMusic server.
--- @return The
+-- @return
 function send(message)
   local command = nil
   if _os == [[windows]] then
 --    command = 'cmd /K "'.._moddir.._scriptMessengerBat..'" '..message
     command = [[cmd /K "]].._moddir.._scriptMessengerBat..[[" ]]..message
-    if _debug then
+    if settings.logging.debug then
 --      command = command .. " & PAUSE" --for debug
     end
   else
     command = 'py "'.. _moddir .._scriptMessenger..'" '..message
   end
 
-  _last_executed = time()..command
+  _last_executed = lib.time()..command
 
   local out = os.execute(command)
 
@@ -160,15 +157,15 @@ end
 -- _log is a simple list of strings.
 function displayLog()
 
-  local x = settings.logging['XPos']
-  local y = settings.logging['YPos']
+  local x = settings.logging.XPos
+  local y = settings.logging.YPos
 
   for i=1, #_log do
 
     local line = _log[i]
 
-    x = settings.logging['XPos']
-    y = settings.logging['YPos']+(i * settings.logging['LineHeight'])
+    x = settings.logging.XPos
+    y = settings.logging.YPos+(i * settings.logging.LineHeight)
 
     PrintText(line, x, y)
 
@@ -217,7 +214,7 @@ function Mod:immortality()
   local p = Isaac.GetPlayer(0)
   p:SetFullHearts()
 
-  Log(time().." got hurt :'(",13)
+  Log(lib.time().." got hurt :'(",13)
 
 
 end
@@ -234,7 +231,7 @@ function Mod:roomchange()
     lastRoomID = RoomID
   end
 
-  Log(time().."Room type we just entered: "..RoomID.." aka "..table.invert(RoomType)[RoomID],i)
+  Log(lib.time().."Room type we just entered: "..RoomID.." aka "..table.invert(RoomType)[RoomID],i)
   i=i+1
   
   Log("Comparing '"..lastRoomID.."' and '"..RoomID..'".',i)

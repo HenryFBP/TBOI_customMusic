@@ -15,7 +15,7 @@ function lib.time()
   return "["..os.clock().."]:"
 end
 
-function lib.table.invert(t)
+function lib.tableinvert(t)
    local s={}
    for k,v in pairs(t) do
      s[v]=k

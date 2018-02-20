@@ -9,17 +9,23 @@
 
 local settings = {}
 
+settings.conf = {
+    ['ModName']="CustomMusic",
+}
+
 settings.logging = {
     ['debug']=true,
     ['XPos']=50,
     ['YPos']=30,
-    ['LineHeight']=10
+    ['LineHeight']=10,
 }
 
 
 settings.paths = {
     ['runtime'] = 'py',
-    ['script_messenger'] = 'messenger.py'
+    ['script_messenger'] = 'messenger.py',
+    ['script_messenger_bat'] = 'messenger.bat',
+    ['script_server'] = 'web/manage.py',
 }
 
 function settings.test()
