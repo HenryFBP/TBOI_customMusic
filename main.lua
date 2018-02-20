@@ -19,6 +19,35 @@ function get_cwd()
   return io.popen"cd":read'*l'
 end
 
+local _moddir = string.gsub(script_path(), [[\]], [[/]])
+local _cwd = string.gsub(get_cwd(), [[\]], [[/]])
+
+local settings = dofile(_moddir..'settings.lua')
+local lib = dofile(_moddir..'lib.lua')
+
+_log = {}
+
+Log = function (thing, place, dest, timestamp)
+  dest = dest or _log
+  timestamp = timestamp or true
+
+  dest[place] = lib.time()..thing
+end
+
+-- Disable logging if we're not in debug mode.
+if not settings.logging.debug then
+  Log = function(a, b)
+    return nil
+  end
+else
+  local i = settings.logging.Length
+  for i = 1, settings.logging.Length do
+    Log("-", i)
+  end
+  Log("'"..settings.conf.ModName.."' mod init.",i); i=i+1
+  Log(([[CWD: "]].._cwd..[["]]), i); i=i+1
+  Log(([[Moddir: "]].._moddir..[["]]), i); i=i+1
+end
 
 function table.val_to_str ( v )
   if "string" == type( v ) then
@@ -64,29 +93,12 @@ function table.invert(t)
    return s
 end
 
+local Mod = RegisterMod(settings.conf.ModName, 1)
 
 
-
-local _name = 'CustomMusic'
-local Mod = RegisterMod(_name, 1)
-local mainModule = {}
-_log = {}
-
-
-
-for i=1, 15 do
-  _log[i] = "..."
-end
-
-local _moddir = string.gsub(script_path(), [[\]], [[/]])
-local _cwd = string.gsub(get_cwd(), [[\]], [[/]])
-
-local settings = dofile(_moddir..'settings.lua')
-local lib = dofile(_moddir..'lib.lua')
 
 local _scriptMessenger =    'messenger.py'
 local _scriptMessengerBat = 'messenger.bat'
-local _scriptServer =       'web/manage.py'
 
 local _os = "unknown"
 _last_executed = "Nothing last run."
@@ -107,11 +119,7 @@ function PrintText(thing, x, y)
   Isaac.RenderText(thing, x, y, 255, 255, 255, 255)
 end
 
-function Log(thing, place)
 
-  _log[place] = lib.time()..thing
-
-end
 
 --- sendCMD sends a command and opens a command-line window.
 -- Interrupts game, is annoying.
@@ -191,11 +199,7 @@ function Mod:onRender()
   local y = Isaac.GetPlayer(0).Position.Y
   local i = 1
 
-  local s = _name.." mod. Isaac x="..x..",y="..y
-
-
-  Log(([[CWD: "]].._cwd..[["]]), i); i=i+1
-  Log(([[Moddir: "]].._moddir..[["]]), i); i=i+1
+  local s = settings.conf.ModName.." mod. Isaac x="..x..",y="..y
 
   Log(s, i); i=i+1
 
@@ -207,21 +211,23 @@ function Mod:onRender()
 --  Log("settings.paths: "..table.tostring(settings.paths)); i=i+1
 
   displayLog()
---  Isaac.RenderText(lastSent, settings.logging["XPos"], settings.logging["YPos"]+(2 * settings.logging["LineHeight"]), 255, 255, 255, 255)
 end
 
 function Mod:immortality()
+
   local p = Isaac.GetPlayer(0)
+  local i = settings.logging.HurtLinePos
+
   p:SetFullHearts()
 
-  Log(lib.time().." got hurt :'(",13)
-
+  Log("u got hurt :'(", i); i=i+1
 
 end
 
 --- Called to tell the server we changed rooms.
 function Mod:roomchange()
-  local i = 6
+
+  local i = settings.logging.RoomChangePos
 
   local room = Game():GetRoom()
   local RoomID = room:GetType()
@@ -253,12 +259,12 @@ function Mod:roomchange()
   
 end
 
-if debug == false then -- disable logging if debug mode is off
-  Log = function(thing) end
+-- add debug stuff if we wanna
+if settings.logging.debug then
+  Mod:AddCallback(ModCallbacks.MC_POST_RENDER, Mod.onRender)
+  Mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, Mod.immortality, EntityType.ENTITY_PLAYER)
 end
 
-Mod:AddCallback(ModCallbacks.MC_POST_RENDER, Mod.onRender)
-Mod:AddCallback(ModCallbacks.MC_ENTITY_TAKE_DMG, Mod.immortality, EntityType.ENTITY_PLAYER)
 Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, Mod.start, EntityType.ENTITY_PLAYER)
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, Mod.roomchange, EntityType.ENTITY_PLAYER)
 --Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, Mod.levelchange, EntityType.ENTITY_PLAYER)

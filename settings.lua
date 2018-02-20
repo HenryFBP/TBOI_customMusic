@@ -14,10 +14,15 @@ settings.conf = {
 }
 
 settings.logging = {
-    ['debug']=true,
+    ['debug']=false,
+
     ['XPos']=50,
     ['YPos']=30,
     ['LineHeight']=10,
+    ['Length']=15,
+
+    ['RoomChangePos']=6,
+    ['HurtLinePos']=14,
 }
 
 
