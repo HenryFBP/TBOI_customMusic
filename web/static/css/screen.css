@@ -1,3 +1,14 @@
+  @keyframes fadebro {
+  0% {
+    background-color: pink;
+  }
+
+  100% {
+    background-color: inherit;
+  }
+
+  }
+
 html {
 }
 
@@ -138,6 +149,10 @@ code.center {
   text-align: center;
   display: block;
   background-color: #2f4f4f;
+}
+
+.fresh {
+  animation: fadebro 3s running;
 }
 
 #log > ol {

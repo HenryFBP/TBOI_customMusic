@@ -17,6 +17,9 @@ var musicJson = {}; //will be updated later.
 var pollerInterval = null; //will later be setInterval(function(){...}, 1000) or something
 var pollTime = 3000; //poll every THIS MANY milliseconds
 
+var currentlyPlaying = null; //what song is currently playing?
+var currentRoom = null; //what song are we in right now?
+
 
 
 $(document).ready(function() //when document loads
@@ -27,6 +30,22 @@ String.prototype.replaceAll = function(search, replacement) {
     var target = this;
     return target.split(search).join(replacement);
 };
+
+
+/***
+  * Trigger the '.fresh' class' animation on some element.
+  */
+function freshen(elt)
+{
+
+  elt.removeClass("fresh");
+
+  void elt[0].offsetWidth; //lol i have no idea what this does
+
+  elt.addClass("fresh");
+
+
+}
 
 // Date.prototype.format() - By Chris West - MIT Licensed
 (function() {
@@ -173,6 +192,7 @@ function isDict(v)
   function updateMusic(room, songs)
   {
     songs = songs || musicJson;
+    room = room || mostRecentRoom;
 
     console.log("want to get music for this room: ")
     console.log(room)
@@ -193,6 +213,8 @@ function isDict(v)
     */
   function playSong(songName, room)
   {
+    currentlyPlaying = songName;
+    currentRoom = room;
 
     var path = mediaPath + songName;
     var songClass = songName.replace(".","_")
@@ -306,6 +328,10 @@ function mostRecentRoom(data)
 function poll(data)
 {
   $('#last-updated code')[0].innerHTML = nowToString();
+
+  var lastup = $('p#last-updated');
+
+  freshen(lastup)
 
   if(data != '0')
   {
@@ -539,5 +565,16 @@ function poll(data)
       },
     });
   });
+
+  // when our song ends, play another!
+  $('audio')[0].addEventListener("ended", function(){
+
+    console.log("Playback ended for song "+currentlyPlaying+" in room "+currentRoom);
+
+    console.log("Playing another song...");
+
+    updateMusic();
+
+  })
 
 });
