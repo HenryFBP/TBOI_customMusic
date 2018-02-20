@@ -191,8 +191,8 @@ function isDict(v)
      */
   function updateMusic(room, songs)
   {
-    songs = songs || musicJson;
-    room = room || mostRecentRoom;
+    var songs = songs || musicJson;
+    var room = room || currentRoom;
 
     console.log("want to get music for this room: ")
     console.log(room)
