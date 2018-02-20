@@ -109,7 +109,7 @@ end
 
 function Log(thing, place)
 
-  _log[place] = thing
+  _log[place] = lib.time()..thing
 
 end
 
@@ -231,7 +231,7 @@ function Mod:roomchange()
     lastRoomID = RoomID
   end
 
-  Log(lib.time().."Room type we just entered: "..RoomID.." aka "..table.invert(RoomType)[RoomID],i)
+  Log("Room type we just entered: "..RoomID.." aka "..table.invert(RoomType)[RoomID],i)
   i=i+1
   
   Log("Comparing '"..lastRoomID.."' and '"..RoomID..'".',i)

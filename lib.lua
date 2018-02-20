@@ -11,8 +11,24 @@ function lib.test()
     return "i am lib test func."
 end
 
+--- Pads str to length len with char from right
+function stringlpad(str, len, char)
+    if char == nil then char = ' ' end
+    return str .. string.rep(char, len - #str)
+end
+
+--- Pads str to length len with char from left
+function stringrpad(str, len, char)
+    if char == nil then char = ' ' end
+    return string.rep(char, len - #str) .. str
+end
+
 function lib.time()
-  return "["..os.clock().."]:"
+    local s = os.clock()
+
+    s = string.format("%.2f",s);
+
+    return "["..s.."]:"
 end
 
 function lib.tableinvert(t)
