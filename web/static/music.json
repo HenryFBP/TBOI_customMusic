@@ -42,10 +42,10 @@
       "library.mp3"
     ],
     "ROOM_SACRIFICE": [
-      "miniboss.mp3"
+      "sacrifice.mp3"
     ],
     "ROOM_DEVIL": [
-      "sacrifice.mp3"
+      "devil.mp3"
     ],
     "ROOM_ANGEL": [
       "angel.mp3"
