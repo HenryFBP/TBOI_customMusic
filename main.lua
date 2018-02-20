@@ -1,3 +1,4 @@
+--- main.lua
 --- Custom Music Mod by HenryFBP.
 -- https://github.com/HenryFBP/TBOI_customMusic
 --
@@ -5,8 +6,12 @@
 --StartDebug()
 
 -- if you see some lines on your screen, set this to 'false'.
-_debug = true
+settings.logging.debug = true
 
+function dofile (filename)
+  local f = assert(loadfile(filename))
+  return f()
+end
 
 function time()
   return "["..os.clock().."]:"
@@ -70,12 +75,16 @@ local Mod = RegisterMod(_name, 1)
 local mainModule = {}
 _log = {}
 
+
+
 for i=1, 15 do
   _log[i] = "..."
 end
 
 local _moddir = string.gsub(script_path(), [[\]], [[/]])
 local _cwd = string.gsub(get_cwd(), [[\]], [[/]])
+
+settings = dofile(_moddir..'settings.lua')
 
 local _script =             'py'
 local _scriptMessenger =    'messenger.py'
@@ -103,7 +112,7 @@ local config = {
 function PrintText(thing, x, y)
   x = x or config['XPos']
   y = y or config['YPos']+100
-  
+
   Isaac.RenderText(thing, x, y, 255, 255, 255, 255)
 end
 
@@ -121,24 +130,24 @@ end
 function sendCMD(message, stay)
   stay = stay or false
   local command = 'py "'.. _moddir .._scriptMessenger..'" '..message
-  
+
   if stay then
     command = command .. " & PAUSE"
   end
-  
+
   os.execute(command)
   return command
 end
 
 --- send sends a command silently.
 -- @param message the message to be sent to the customMusic server.
--- @return The 
+-- @return The
 function send(message)
   local command = nil
   if _os == [[windows]] then
 --    command = 'cmd /K "'.._moddir.._scriptMessengerBat..'" '..message
     command = [[cmd /K "]].._moddir.._scriptMessengerBat..[[" ]]..message
-    if _debug then
+    if settings.logging.debug then
 --      command = command .. " & PAUSE" --for debug
     end
   else
@@ -201,8 +210,13 @@ function Mod:onRender()
 
   Log("I think your OS is: ".._os, i); i=i+1
   Log("last exec: ".._last_executed, i); i=i+1
-
-  displayLog()
+  Log(_moddir..'settings', i); i=i+1
+  Log('settings: '..table.tostring(settings), i); i=i+1
+--  Log("settings.test: "..settings:test()); i=i+1
+--  Log("settings.paths: "..table.tostring(settings.paths)); i=i+1
+  if settings.logging.debug then
+    displayLog()
+  end
 --  Isaac.RenderText(lastSent, config["XPos"], config["YPos"]+(2 * config["LineHeight"]), 255, 255, 255, 255)
 end
 
