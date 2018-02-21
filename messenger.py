@@ -47,7 +47,7 @@ try:
 
     r.close()
 
-    if _debug:
+    if not _debug:
         sys.exit(1)
     else:
         while True:
