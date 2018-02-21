@@ -22,7 +22,7 @@ print("PROJECT_PATH = "+PROJECT_PATH)
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'hhjcco025tbluybe1zn-#9+_pc!hy7!!65e+j7_3mf8j+*b_fd'
+SECRET_KEY = 'potato'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
