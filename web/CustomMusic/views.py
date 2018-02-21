@@ -4,7 +4,7 @@ from __future__ import unicode_literals
 
 import json
 
-from custommusic.models import *
+from CustomMusic.models import *
 from django.conf import settings
 from django.http import *
 from django.template.response import TemplateResponse

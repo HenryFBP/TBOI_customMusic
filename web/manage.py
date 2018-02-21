@@ -4,8 +4,10 @@
 import os
 import sys
 
+_debug = True
+
 if __name__ == "__main__":
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "custommusic.settings")
+    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "CustomMusic.settings")
     try:
         from django.core.management import execute_from_command_line
     except ImportError:
@@ -22,3 +24,9 @@ if __name__ == "__main__":
             )
         raise
     execute_from_command_line(sys.argv)
+
+    if _debug:
+        sys.exit(1)
+    else:
+        while True:
+            input("Waiting 'cuz debug mode is on.")

@@ -3,8 +3,6 @@
 -- https://github.com/HenryFBP/TBOI_customMusic
 --
 
---StartDebug()
-
 function dofile (filename)
   local f = assert(loadfile(filename))
   return f()
@@ -40,6 +38,7 @@ if not settings.logging.debug then
     return nil
   end
 else
+  StartDebug()
   local i = settings.logging.Length
   for i = 1, settings.logging.Length do
     Log("-", i)
