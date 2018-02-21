@@ -57,7 +57,7 @@ except Exception as e:
     print(f'I\'m going to assume that the "{_modName}" server is NOT running, so I\'m going to start it.')
     print('')
     startServer()
-    if _debug:
+    if not _debug:
         sys.exit(1)
     else:
         while True:
