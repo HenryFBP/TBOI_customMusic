@@ -5,6 +5,6 @@ ECHO Current .BAT dir: %~dp0
 
 START /MIN "" python "%~dp0messenger.py" %*
 
-PAUSE
+REM PAUSE
 
 EXIT

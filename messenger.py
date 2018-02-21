@@ -3,18 +3,19 @@ import sys
 
 import requests
 
-_debug = True
+_debug = False
 _append = ''
 
+# we want to PAUSE the console if in debug mode
 if _debug:
-    _append = '& PAUSE'
+    _append = ' && PAUSE'
 
 _host = 'localhost'
 _port = 8000
 _modName = 'CustomMusic'
 _scriptPath = os.path.dirname(sys.argv[0])  # 0th one is always name of script
 
-_serverScript = './web/manage.py'
+_serverScript = '/web/manage.py'
 _runt = 'python'
 
 # message is everything after 0th arg
@@ -32,7 +33,7 @@ print(f"Sending message '{_message}'")
 
 
 def startServer():
-    command = f'cmd /K start {_runt} "{_scriptPath + _serverScript}" runserver {_host}:{_port}'
+    command = f'cmd /K start {_runt} "{_scriptPath + _serverScript}" runserver {_host}:{_port}' + _append
     print(f"Command: '{command}'")
     return os.popen(command+_append)
 
