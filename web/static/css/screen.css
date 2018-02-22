@@ -12,6 +12,15 @@
 html {
 }
 
+ul {
+  padding-left: 0;
+}
+
+li ol,
+li ul {
+  padding-left: 1.222em;
+}
+
 p {
   padding-left: 1em;
 }
@@ -32,6 +41,10 @@ audio {
 input[type="checkbox"] {
   width: 30px;
   height: 30px;
+}
+
+input[type="number"] {
+  min-width: 3em;
 }
 
 .wait:hover {
@@ -121,6 +134,17 @@ main {
   height: 100%;
   background-color: black;
   color: white;
+}
+
+#server-controls {
+  background-color: #3c3c3c;
+  display: grid;
+  list-style-type: none;
+}
+
+#delay-controls {
+  display: grid;
+  grid-template-columns: 50% 50%;
 }
 
 #poll {

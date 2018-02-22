@@ -503,15 +503,28 @@ function poll(data)
     }
     else
     {
-      //stop it if it exists
-      if(pollerInterval)
-      {
-        clearInterval(pollerInterval);
-      }
+      clearInterval(pollerInterval);
     }
   });
 
 $('#should-poll-box').trigger('click').trigger('click'); //fire event so we set up polling
+
+
+//someone wants to change the delay via slider
+$('#delay-slider').change(function(){
+
+  //update so they see da number
+  $('#delay-controls label')[0].innerHTML = "Query delay: "+($(this).val())+"s";
+
+  //update pollTime var
+  pollTime = 1000*parseInt($(this).val());
+
+  //cause var to be used
+  $('#should-poll-box').trigger('click').trigger('click');
+
+});
+
+$('#delay-slider').trigger('change'); //to set up label
 
   // someone wants to poll manually
   $('#poll>button').on('click', function(event){
