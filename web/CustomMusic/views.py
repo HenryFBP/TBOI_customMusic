@@ -17,7 +17,7 @@ from django.views.decorators.http import *
 
 # homepage
 def index(request: HttpRequest):
-    t = TemplateResponse(request, 'test_template.html', {})
+    t = TemplateResponse(request, 'index.html', {})
 
     t.render()
 
