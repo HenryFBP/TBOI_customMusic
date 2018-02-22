@@ -1,7 +1,9 @@
 import os
 import sys
-
-import requests
+try:
+    import requests
+except:
+    input("'requests' library not found.\nTry 'pip install requests'?")
 
 _debug = False
 _append = ''
@@ -63,7 +65,8 @@ except Exception as e:
         while True:
             input("Waiting 'cuz debug mode is on.")
 
-# except Exception as e:
-#     print("Unhandled exception:")
-#     print(e)
+except Exception as e:
+    print("Unhandled exception:")
+    print(e)
 
+    input("Sorry.")
