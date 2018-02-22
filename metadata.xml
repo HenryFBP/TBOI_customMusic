@@ -2,7 +2,7 @@
 <metadata>
     <name>Custom Music</name>
     <directory>custommusic</directory>
-    <id>0</id>
+    <id>1309233759</id>
     <description>Mod that lets you set your own music!
 
 TL;DR:
@@ -56,7 +56,7 @@ Don't know if it plays well on Mac or Linux. Haven't had time to test.
 Let me know, make pull requests, fork it, whatever, etc.
 
 Enjoy!</description>
-    <version>1.0</version>
+    <version>1.1</version>
     <visibility>Public</visibility>
     <tag id="Lua"/>
     <tag id="Tweaks"/>
