@@ -18,7 +18,7 @@ class settings:
 
     server_script = '/web/manage.py'
     script_path = os.path.dirname(sys.argv[0])
-    
+
     message = "defaultsettings.message"
 
 
@@ -29,7 +29,7 @@ except:
 
 if isinstance(sys.argv, list) and len(sys.argv) > 1:
 
-    settings.message = "" # clear message if we have arg
+    settings.message = ""  # clear message if we have arg
 
     for i in range(1, len(sys.argv)):
         settings.message += sys.argv[i]
@@ -47,17 +47,20 @@ def startServerWin(debug=False, append=''):
     print(f"Command: '{command}'")
     return os.popen(command)
 
+
 def startServerLinux():
     """
     Starts the TBOI music webserver for Linux.
     """
     pass
 
+
 def startServerMac():
     """
     Starts the TBOI music webserver for Mac.
     """
     pass
+
 
 def startServer(os=settings.os_type, debug=False, append=''):
     if os == 'win32' or os == 'win64':
@@ -69,6 +72,7 @@ def startServer(os=settings.os_type, debug=False, append=''):
 
     print(f"Don't know what OS '{os}' is.")
     return None
+
 
 try:
     r = requests.post(f'http://{settings.host}:{str(settings.port)}/post/', data={"room": settings.message})

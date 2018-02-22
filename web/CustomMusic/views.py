@@ -3,7 +3,8 @@
 from __future__ import unicode_literals
 
 import json
-
+import signal
+from CustomMusic import *
 from CustomMusic.models import *
 from django.conf import settings
 from django.http import *
@@ -48,7 +49,10 @@ def play(request: HttpRequest):
 def shutdown(request: HttpRequest):
 
     print("Someone wants to shut down!")
-    pass
+
+    signal.signal(signal.SIGINT, my_signal_handler)
+
+    return HttpResponse('Shutting down server ')
 
 # to ask if we should change songs
 def query(request: HttpRequest):

@@ -511,7 +511,7 @@ function poll(data)
     }
   });
 
-$('#should-poll-box').trigger('click').trigger('click');
+$('#should-poll-box').trigger('click').trigger('click'); //fire event so we set up polling
 
   // someone wants to poll manually
   $('#poll>button').on('click', function(event){
