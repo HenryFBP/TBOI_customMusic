@@ -177,12 +177,12 @@ function isDict(v)
   {
     if(data === '0')
     {
-      print("No room change yet.")
+      console.log("No room change yet.")
     }
     else
     {
-     print("O BOY ROOM CHANGE:")
-     print(data)
+     console.log("O BOY ROOM CHANGE:")
+     console.log(data)
     }
   }
 
@@ -477,14 +477,7 @@ function poll(data)
       roomList = wrap(roomList, 'ul');
     }
 
-//    console.log("List of rooms: ")
-//    console.log(roomList);
-
     e = wrap((e + roomList), 'li', roomName);
-
-//    console.log("Returning this:")
-//    console.log(e)
-
 
     return e;
   }
@@ -498,20 +491,6 @@ function poll(data)
       musicJson = JSON.parse(data);
     },
   });
-
-  //if we want to continually ask for tracks, then do!
-  if($('#should-poll-box')[0].checked)
-  {
-    pollerInterval = setInterval(pollIntervalFunction, pollTime);
-  }
-  else
-  {
-    //stop it if it exists
-    if(pollerInterval)
-    {
-      clearInterval(pollerInterval);
-    }
-  }
 
   // someone wants to toggle auto-polling
   $('#should-poll-box').on('click', function(event) {
@@ -532,6 +511,7 @@ function poll(data)
     }
   });
 
+$('#should-poll-box').trigger('click').trigger('click');
 
   // someone wants to poll manually
   $('#poll>button').on('click', function(event){
@@ -569,9 +549,9 @@ function poll(data)
   // when our song ends, play another!
   $('audio')[0].addEventListener("ended", function(){
 
-    console.log("Playback ended for song "+currentlyPlaying+" in room "+currentRoom);
+//    console.log("Playback ended for song "+currentlyPlaying+" in room "+currentRoom);
 
-    console.log("Playing another song...");
+//    console.log("Playing another song...");
 
     updateMusic();
 
