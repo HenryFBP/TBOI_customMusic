@@ -5,6 +5,16 @@
     <id>1309233759</id>
     <description>Mod that lets you set your own music!
 
+VERY IMPORTANT:
+
+You MUST have the following installed for this mod to work:
+
+- Python 3.6.* or greater
+- The following python packages:
+    - django
+    - requests
+
+	
 TL;DR:
 
 You make a list of songs,
