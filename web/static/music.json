@@ -5,68 +5,68 @@
 
     ],
     "ROOM_DEFAULT": [
-      "hello.mp3"
+      "henry_voice/hello.mp3"
     ],
     "ROOM_SHOP": [
-      "shop1.mp3",
-      "shop2.mp3"
+      "henry_voice/shop1.mp3",
+      "henry_voice/shop2.mp3"
     ],
     "ROOM_ERROR": [
-      "error.mp3"
+      "henry_voice/error.mp3"
     ],
     "ROOM_TREASURE": [
-      "treasure.mp3"
+      "henry_voice/treasure.mp3"
     ],
     "ROOM_BOSS": [
-      "boss.mp3"
+      "henry_voice/boss.mp3"
     ],
     "ROOM_MINIBOSS": [
-      "miniboss.mp3"
+      "henry_voice/miniboss.mp3"
     ],
     "ROOM_SECRET": [
-      "secret.mp3"
+      "henry_voice/secret.mp3"
     ],
     "ROOM_SUPERSECRET": [
-      "supersecret.mp3"
+      "henry_voice/supersecret.mp3"
     ],
     "ROOM_ARCADE": [
-      "arcade.mp3"
+      "henry_voice/arcade.mp3"
     ],
     "ROOM_CURSE": [
-      "curse.mp3"
+      "henry_voice/curse.mp3"
     ],
     "ROOM_CHALLENGE": [
-      "challenge.mp3"
+      "henry_voice/challenge.mp3"
     ],
     "ROOM_LIBRARY": [
-      "library.mp3"
+      "henry_voice/library.mp3"
     ],
     "ROOM_SACRIFICE": [
-      "sacrifice.mp3"
+      "henry_voice/sacrifice.mp3"
     ],
     "ROOM_DEVIL": [
-      "devil.mp3"
+      "henry_voice/devil.mp3"
     ],
     "ROOM_ANGEL": [
-      "angel.mp3"
+      "henry_voice/angel.mp3"
     ],
     "ROOM_DUNGEON": [
-      "dungeon.mp3"
+      "henry_voice/dungeon.mp3"
     ],
     "ROOM_BOSSRUSH": [
-      "bossrush.mp3"
+      "henry_voice/bossrush.mp3"
     ],
     "ROOM_ISAACS": [
-      "isaacs.mp3"
+      "henry_voice/isaacs.mp3"
     ],
     "ROOM_BARREN": [
-      "barren.mp3"
+      "henry_voice/barren.mp3"
     ],
     "ROOM_CHEST": [
-      "chest.mp3"
+      "henry_voice/chest.mp3"
     ],
     "ROOM_DICE": [
-      "dice.mp3"
+      "henry_voice/dice.mp3"
     ]
   }
 }
