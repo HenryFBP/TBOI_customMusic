@@ -12,11 +12,21 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 
 import os
 
+IS_CORS_INSTALLED = False
+
+try:
+    import corsheaders
+
+    IS_CORS_INSTALLED = True
+
+except ImportError as e:
+    print(e)
+    print("corsheaders not installed. Some features will be unavailable.")
+
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 PROJECT_PATH = BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-print("PROJECT_PATH = "+PROJECT_PATH)
-
+print("PROJECT_PATH = " + PROJECT_PATH)
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
@@ -32,6 +42,44 @@ ALLOWED_HOSTS = [
     'localhost',
 ]
 
+CORS_ORIGIN_ALLOW_ALL = True
+
+CORS_ORIGIN_WHITELIST = (
+    'bandcamp.com',
+    'google.com',
+)
+
+CORS_ORIGIN_REGEX_WHITELIST = ()
+
+CORS_URLS_REGEX = '^.*$'
+
+CORS_ALLOW_METHODS = (
+    'GET',
+    'POST',
+    'PUT',
+    'PATCH',
+    'DELETE',
+    'OPTIONS'
+)
+
+CORS_ALLOW_HEADERS = (
+    'x-requested-with',
+    'content-type',
+    'accept',
+    'origin',
+    'authorization',
+    'x-csrftoken'
+)
+
+CORS_EXPOSE_HEADERS = ()
+
+CORS_PREFLIGHT_MAX_AGE = 86400
+
+CORS_ALLOW_CREDENTIALS = False
+
+CORS_REPLACE_HTTPS_REFERER = False
+
+CORS_URLS_ALLOW_ALL_REGEX = ()
 
 # Application definition
 
@@ -45,7 +93,11 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 ]
 
+if IS_CORS_INSTALLED:
+    INSTALLED_APPS += ['corsheaders']
+
 MIDDLEWARE = [
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,13 +107,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+if IS_CORS_INSTALLED:
+    MIDDLEWARE += ['corsheaders.middleware.CorsMiddleware']
+
 ROOT_URLCONF = 'CustomMusic.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            BASE_DIR+"/templates/",
+            BASE_DIR + "/templates/",
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -77,7 +132,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'CustomMusic.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
@@ -89,7 +143,6 @@ DATABASES = {
 }
 
 DATABASE_PATH = os.path.join(BASE_DIR, 'db.sqlite3')
-
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -109,7 +162,6 @@ AUTH_PASSWORD_VALIDATORS = [
     # },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
@@ -122,7 +174,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.11/howto/static-files/
@@ -143,8 +194,6 @@ MEDIA_ROOT = os.path.join(STATICFILES_DIRS[0], "media")
 
 print("MEDIA_ROOT: ")
 print(repr(MEDIA_ROOT))
-
-
 
 # List of finder classes that know how to find static files in
 # various locations.

@@ -3,14 +3,16 @@
 from __future__ import unicode_literals
 
 import json
-import signal
-from CustomMusic import *
-from CustomMusic.models import *
+
+import requests
 from django.conf import settings
 from django.http import *
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import *
 from django.views.decorators.http import *
+
+from CustomMusic import *
+from CustomMusic.models import *
 
 
 # Create your views here.
@@ -32,9 +34,9 @@ def music(request: HttpRequest):
 
     return HttpResponse(open(music_loc).read())
 
+
 # they want a song
 def play(request: HttpRequest):
-
     print("Person wants to play song here:")
     print("Full path: " + request.get_full_path())
     print("Absolute URI: " + request.build_absolute_uri())
@@ -45,14 +47,15 @@ def play(request: HttpRequest):
 
     return StreamingHttpResponse()
 
+
 # turn off server
 def shutdown(request: HttpRequest):
-
     print("Someone wants to shut down!")
 
     signal.signal(signal.SIGINT, my_signal_handler)
 
     return HttpResponse('Shutting down server ')
+
 
 # to ask if we should change songs
 def query(request: HttpRequest):
@@ -79,6 +82,22 @@ def query(request: HttpRequest):
     print("Deleted all room visits.")
 
     return HttpResponse(jsondata, content_type="application/json")
+
+
+# for cross origin requests
+def CORS(request: HttpRequest):
+    url = request.GET.get('url');
+
+    print("Want to GET this thing:" + url)
+
+    req = requests.get(url)
+
+    data = req.content
+
+    print("We got back:")
+    print(data)
+
+    return HttpResponse(data)
 
 
 # POST from isaac client
