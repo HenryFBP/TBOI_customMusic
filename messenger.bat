@@ -1,10 +1,26 @@
-@ECHO ON
+@ECHO OFF
 
-ECHO Hi. We were passed: %*
-ECHO Current .BAT dir: %~dp0
+SET debug=false
 
-START /MIN "" python "%~dp0messenger.py" %*
+SET runtime=python
+SET messenger=messenger.py
 
-REM PAUSE
+IF "%debug%"=="true" (
+    @ECHO ON
+    
+    ECHO Hi. We were passed: %*
+    ECHO Current .BAT dir: %~dp0
+
+    CMD /K %runtime% "%~dp0%messenger%" %*
+) ELSE (
+    START /MIN "" %runtime% "%~dp0%messenger%" %*
+)
+
+
+IF "%debug%"=="true" (
+    PAUSE
+)
+
+
 
 EXIT
