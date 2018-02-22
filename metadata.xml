@@ -5,6 +5,10 @@
     <id>1309233759</id>
     <description>Mod that lets you set your own music!
 
+GitHub repo: https://github.com/HenryFBP/TBOI_customMusic
+
+How to install: https://www.youtube.com/watch?v=_8lYwNmKgpQ
+
 VERY IMPORTANT:
 
 You MUST have the following installed for this mod to work:
@@ -14,12 +18,13 @@ You MUST have the following installed for this mod to work:
     - django
     - requests
 
-	
 TL;DR:
 
 You make a list of songs,
 turn off the game's music,
 and listen to your music through a web interface.
+
+
 
 Songs change when room types change.
 
