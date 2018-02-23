@@ -4,6 +4,7 @@ This is a list of required Python 3.6 libraries that are...required.
 
 You can install these using `pip` or `easy_install`.
 
-
-- django
+- pprint
 - requests
+- django
+- django-cors-headers
