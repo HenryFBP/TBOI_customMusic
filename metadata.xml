@@ -71,7 +71,7 @@ Don't know if it plays well on Mac or Linux. Haven't had time to test.
 Let me know, make pull requests, fork it, whatever, etc.
 
 Enjoy!</description>
-    <version>1.3</version>
+    <version>1.4</version>
     <visibility>Public</visibility>
     <tag id="Lua"/>
     <tag id="Tweaks"/>
