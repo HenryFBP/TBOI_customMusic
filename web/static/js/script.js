@@ -217,7 +217,7 @@ function isDict(v)
     currentRoom = room;
 
     var path = mediaPath + songName;
-    var songClass = songName.replace(".","_")
+    var songClass = songName.replace(/[\.\\\/]/g, "_")
 
 //    alert("PLAYIN DIS: '"+songName+"' AT DIS LOC: '"+path+"'.");
 
