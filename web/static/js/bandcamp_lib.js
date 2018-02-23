@@ -5,25 +5,18 @@ var album_to_mp3s_dir = '/album_to_mp3s'
 
 var site = host+':'+port+subdir
 
-function album_to_mp3s(album)
+function album_to_mp3s(album, successFunc, failureFunc, errorFunc)
 {
-    reqUrl = site+album_to_mp3s_dir+"/?url="+album
+    var reqUrl = site+album_to_mp3s_dir+"/?url="+album
 
-    console.log("Querying this:"+reqUrl)
-
-    $.ajax({
+    var promise = $.ajax({
       url: reqUrl,
       type: 'GET',
-      success: function(data, album) {
-        console.log(data);
-      },
-      fail: function(data, album) {
-        console.log("Failed.");
-      },
-      error: function(result) {
-        var m = "Couldn't get data for "+reqUrl+".";
-        console.log(m);
-        alert(m);
-      }
+      success: successFunc,
+      fail: failureFunc,
+      error: errorFunc,
     });
+
+    return promise
+
 }
