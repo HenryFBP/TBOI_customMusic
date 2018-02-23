@@ -1,12 +1,15 @@
 var host = 'http://localhost'
 var port = '8000'
 var subdir = '/CORS'
+var album_to_mp3s_dir = '/album_to_mp3s'
 
 var site = host+':'+port+subdir
 
 function album_to_mp3s(album)
 {
-    reqUrl = site+"?url="+album
+    reqUrl = site+album_to_mp3s_dir+"/?url="+album
+
+    console.log("Querying this:"+reqUrl)
 
     $.ajax({
       url: reqUrl,

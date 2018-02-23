@@ -23,10 +23,11 @@ from . import views, settings
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
-    path('', views.index, name='index'),
-    path('post/', views.post, name='post'), # we are changing rooms!
-    path('music/', views.music, name='music'), #we want to get a list of music!
-    path('query/', views.query, name='query'), # we want to know if we should switch songs
-    path('shutdown/', views.shutdown, name='shutdown'), # we want to shut down
-    path('CORS/', views.CORS, name='CORS'), # dumb HTML header nonsense...
+    path('',                    views.index,            name='index'),
+    path('post/',               views.post,             name='post'), # we are changing rooms!
+    path('music/',              views.music,            name='music'), #we want to get a list of music!
+    path('query/',              views.query,            name='query'), # we want to know if we should switch songs
+    path('shutdown/',           views.shutdown,         name='shutdown'), # we want to shut down
+    path('CORS/',               views.CORS,             name='CORS'), # dumb HTML header nonsense...DARN U CORS!!
+    path('CORS/album_to_mp3s/', views.album_to_MP3s,    name='album_to_mp3s'), # album to list of MP3s
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

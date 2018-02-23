@@ -13,6 +13,7 @@ from django.views.decorators.http import *
 
 from CustomMusic import *
 from CustomMusic.models import *
+import CustomMusic.apps as apps
 
 
 # Create your views here.
@@ -52,9 +53,16 @@ def play(request: HttpRequest):
 def shutdown(request: HttpRequest):
     print("Someone wants to shut down!")
 
-    signal.signal(signal.SIGINT, my_signal_handler)
+    resp = "Shutting down server."
 
-    return HttpResponse('Shutting down server ')
+    try:
+        signal.signal(signal.SIGINT, my_signal_handler)
+    except Exception as e:
+        print(e)
+        resp = "Couldn't shut down:"
+        resp += "<br>"+repr(e)
+
+    return HttpResponse(resp)
 
 
 # to ask if we should change songs
@@ -86,7 +94,7 @@ def query(request: HttpRequest):
 
 # for cross origin requests
 def CORS(request: HttpRequest):
-    url = request.GET.get('url');
+    url = request.GET.get('url')
 
     print("Want to GET this thing:" + url)
 
@@ -94,11 +102,27 @@ def CORS(request: HttpRequest):
 
     data = req.content
 
+    d = {}
+
+    d.get()
+
     print("We got back:")
-    print(data)
+    print(str(data)[0:1000])
 
     return HttpResponse(data)
 
+
+# they want to turn a bandcamp album URL into a list of MP3s.
+def album_to_MP3s(request: HttpRequest):
+
+    url = request.GET.get('url')
+
+    mp3s = _album_to_mp3s(url)
+
+    print("MP3s gotten back: ")
+    print(mp3s)
+
+    pass
 
 # POST from isaac client
 @csrf_exempt  # idc about no got damn security!!!
