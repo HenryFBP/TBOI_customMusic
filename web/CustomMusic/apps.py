@@ -6,7 +6,9 @@ import requests
 import re
 from pprint import pprint
 
-fileRX = re.compile(r'''"title":"(.+?)".+?"file":.+?(http.+?\")\}''')
+fileRX = re.compile(r'''"title":"(.+?)".+?"file":.+?(http.+?)\"\}''')
+
+cache_albums = {}
 
 class CustommusicConfig(AppConfig):
     name = 'CustomMusic'
@@ -18,19 +20,24 @@ def album_to_mp3s(albumURL: str) -> {}:
     print("Passed this URL:")
     print(albumURL)
 
-    resp = requests.get(albumURL)
+    if albumURL in cache_albums: #if we've already done it, return cached MP3 URLs.
+        print(f"Already seen '{albumURL}', returning cached MP3 URLs.")
+        return cache_albums[albumURL]
 
-    htmlString = resp.content.decode('utf-8')
+    resp = requests.get(albumURL) # ask bandcamp for their album.html content
 
-    matches = re.findall(fileRX, htmlString )
+    htmlString = resp.content.decode('utf-8') # binary -> string
 
+    matches = re.findall(fileRX, htmlString) # get all matches
 
-    songs = {}
+    songs = {} # dict
 
-    for (name, url) in matches:
+    for (name, url) in matches: # use our capturing groups
         songs[name] = url
 
     pprint(songs)
+
+    cache_albums[albumURL] = songs # cache it
 
     return songs
 

@@ -117,12 +117,14 @@ def album_to_MP3s(request: HttpRequest):
 
     url = request.GET.get('url')
 
-    mp3s = _album_to_mp3s(url)
+    mp3s = apps.album_to_mp3s(url)
 
-    print("MP3s gotten back: ")
-    print(mp3s)
+    # print("MP3s gotten back: ")
+    # print(mp3s)
 
-    pass
+    jsondata = json.dumps(mp3s)
+
+    return HttpResponse(jsondata, content_type="application/json")
 
 # POST from isaac client
 @csrf_exempt  # idc about no got damn security!!!
