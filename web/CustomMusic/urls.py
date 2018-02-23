@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
 
     path('',                    views.index,            name='index'),
+    path('diagnostics/',        views.diagnostics,      name='diagnostics'), # diagnose any problems
     path('post/',               views.post,             name='post'), # we are changing rooms!
     path('music/',              views.music,            name='music'), #we want to get a list of music!
     path('query/',              views.query,            name='query'), # we want to know if we should switch songs

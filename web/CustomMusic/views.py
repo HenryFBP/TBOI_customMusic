@@ -48,6 +48,13 @@ def play(request: HttpRequest):
 
     return StreamingHttpResponse()
 
+#server diagnostics page
+def diagnostics(request: HttpRequest):
+    t = TemplateResponse(request, 'diagnostics.html', {})
+
+    t.render()
+
+    return HttpResponse(t.content)
 
 # turn off server
 def shutdown(request: HttpRequest):

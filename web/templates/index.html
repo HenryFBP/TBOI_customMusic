@@ -1,4 +1,4 @@
-{% load static %}
+{% load staticfiles %}
 
 <!DOCTYPE html>
 <html>
@@ -9,11 +9,7 @@
 </head>
 <body>
 <nav>
-    <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/admin">Admin login (root:root)</a></li>
-        <li><a href="/shutdown">Shutdown Server</a></li>
-    </ul>
+    {% include "navbar.html" %}
 </nav>
 <main>
     <section id="info">
