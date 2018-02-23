@@ -1,4 +1,4 @@
-{% load static %}
+{% load staticfiles %}
 
 <!DOCTYPE html>
 <html lang="en">
@@ -12,11 +12,14 @@
     {% include "navbar.html" %}
 </nav>
 <main>
+    <aside>
+        <p>This page tells you which packages are seen as installed by the webserver.</p>
+    </aside>
     <section>
         <h1>Diagnostic Tests:</h1>
         <ol>
             {% for key, value in diags.items %}
-              <li>{{ key }}:{{ value }}</li>
+            <li>{{ key }}:{{ value }}</li>
             {% endfor %}
         </ol>
     </section>
