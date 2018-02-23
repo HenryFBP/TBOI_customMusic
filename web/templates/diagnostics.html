@@ -11,8 +11,18 @@
 <nav>
     {% include "navbar.html" %}
 </nav>
+<main>
+    <section>
+        <h1>Diagnostic Tests:</h1>
+        <ol>
+            {% for key, value in diags.items %}
+              <li>{{ key }}:{{ value }}</li>
+            {% endfor %}
+        </ol>
+    </section>
+</main>
 </body>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<script src="{% static 'js/bandcamp_lib.js' %}"></script>
-<script src="{% static 'js/script.js' %}"></script>
+<!--<script src="{% static 'js/bandcamp_lib.js' %}"></script>-->
+<!--<script src="{% static 'js/script.js' %}"></script>-->
 </html>

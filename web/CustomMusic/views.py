@@ -10,6 +10,7 @@ from django.http import *
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import *
 from django.views.decorators.http import *
+from django.shortcuts import render
 
 from CustomMusic import *
 from CustomMusic.models import *
@@ -49,7 +50,7 @@ def play(request: HttpRequest):
     return StreamingHttpResponse()
 
 #server diagnostics page
-def diagnostics(request: HttpRequest):
+def diagnosticsOld(request: HttpRequest):
     t = TemplateResponse(request, 'diagnostics.html', {})
 
     t.render()
@@ -149,3 +150,28 @@ def post(request: HttpRequest):
     r.save()
 
     return HttpResponse(respData)
+
+def diagnostics(request: HttpRequest):
+
+    diags = {}
+
+    try:
+        import pprint
+        diags['pprint'] = [True]
+    except ImportError as e:
+        diags['pprint'] = [False, e]
+
+    try:
+        import requests
+        diags['requests'] = [True]
+    except ImportError as e:
+        diags['requests'] = [False, e]
+
+    try:
+        import corsheaders
+        diags['corsheaders'] = [True]
+    except ImportError as e:
+        diags['corsheaders'] = [False, e]
+
+    return render(request, 'diagnostics.html', {'diags': diags})
+
