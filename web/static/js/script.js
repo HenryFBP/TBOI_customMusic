@@ -470,6 +470,7 @@ function poll(data)
       for(var i = 0; i<room[roomName].length; i++)
       {
         var songClass = room[roomName][i].replace('.','_'); //can't have dots in class names
+        songClass = songClass.replace('/','_'); //can't have slashes in class names
 
         roomList += wrap(room[roomName][i], 'li', songClass) + '\n';
       }
