@@ -7,14 +7,14 @@ import json
 import requests
 from django.conf import settings
 from django.http import *
+from django.shortcuts import render
 from django.template.response import TemplateResponse
 from django.views.decorators.csrf import *
 from django.views.decorators.http import *
-from django.shortcuts import render
 
+import CustomMusic.apps as apps
 from CustomMusic import *
 from CustomMusic.models import *
-import CustomMusic.apps as apps
 
 
 # Create your views here.
@@ -34,7 +34,46 @@ def music(request: HttpRequest):
 
     print("Sending music.json file!")
 
-    return HttpResponse(open(music_loc).read())
+    with open(music_loc) as data_file:
+
+        dict = json.load(data_file)
+
+        for (room, songs) in dict["rooms"].items():  # go through all rooms
+            print(f"{room}:")
+
+            i = 0
+            for song in songs:  # go through all songs for a room
+                print(f"{i}th song: {song}")
+
+                #if it's a string
+                if isinstance(song, str):
+
+                    # if it's a link to a bandcamp album
+                    if 'bandcamp' in song and 'bcbits.com/stream/' not in song:
+
+                        print(f"We're gonna have to get BC MP3 URLS from {song}. ")
+                        songsFromAlbum = apps.album_to_mp3s(song)
+
+                        del dict["rooms"][room][i]  # remove useless URL
+
+                        for name, mp3loc in songsFromAlbum.items():  # go thru all mp3s
+
+                            songEntry = {"name": name, "uri": mp3loc}
+                            dict["rooms"][room].append(songEntry)
+
+                    else:  # we don't want to get from bandcamp, but it's still a string...
+                        songEntry = {"name": song.split('/')[-1], "uri":song}
+
+                        dict["rooms"][room][i] = songEntry # replace bare URI with dict entry
+                else: # not a string, don't care.
+                    pass
+
+                i += 1 #unconditionally increment
+
+    with open(music_loc + '.compiled.tmp', 'w') as outfile:
+        json.dump(dict, outfile, sort_keys=True, indent=4, separators=(',', ': ',))
+
+    return HttpResponse(json.dumps(dict), content_type="application/json")
 
 
 # they want a song
@@ -49,13 +88,6 @@ def play(request: HttpRequest):
 
     return StreamingHttpResponse()
 
-#server diagnostics page
-def diagnosticsOld(request: HttpRequest):
-    t = TemplateResponse(request, 'diagnostics.html', {})
-
-    t.render()
-
-    return HttpResponse(t.content)
 
 # turn off server
 def shutdown(request: HttpRequest):
@@ -68,7 +100,7 @@ def shutdown(request: HttpRequest):
     except Exception as e:
         print(e)
         resp = "Couldn't shut down:"
-        resp += "<br>"+repr(e)
+        resp += "<br>" + repr(e)
 
     return HttpResponse(resp)
 
@@ -122,7 +154,6 @@ def CORS(request: HttpRequest):
 
 # they want to turn a bandcamp album URL into a list of MP3s.
 def album_to_MP3s(request: HttpRequest):
-
     url = request.GET.get('url')
 
     mp3s = apps.album_to_mp3s(url)
@@ -133,6 +164,7 @@ def album_to_MP3s(request: HttpRequest):
     jsondata = json.dumps(mp3s)
 
     return HttpResponse(jsondata, content_type="application/json")
+
 
 # POST from isaac client
 @csrf_exempt  # idc about no got damn security!!!
@@ -151,8 +183,8 @@ def post(request: HttpRequest):
 
     return HttpResponse(respData)
 
-def diagnostics(request: HttpRequest):
 
+def diagnostics(request: HttpRequest):
     diags = {}
 
     try:
@@ -174,4 +206,3 @@ def diagnostics(request: HttpRequest):
         diags['corsheaders'] = [False, e]
 
     return render(request, 'diagnostics.html', {'diags': diags})
-

@@ -103,7 +103,7 @@ function isDict(v)
 
   var s = '';
 
-    if(elt)
+    if(elt || elt === '')
     {
       if(tag)
       {

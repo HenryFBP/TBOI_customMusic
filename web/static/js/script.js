@@ -22,22 +22,149 @@ var currentRoom = null; //what song are we in right now?
 
 
 
-$(document).ready(function() //when document loads
-{
 
   $('#nojs').hide(); //don't show 'WHY NO JS??' msg
 
+//https://stackoverflow.com/questions/8628413/jquery-find-the-element-with-a-particular-custom-attribute
 var Song = class Song {
-    constructor(name, album, uri) {
+    constructor(name, album, room, uri) {
         this.name = name;
         this.album = album;
+        this.room = room;
         this.uri = uri;
     }
 
-    static toElement() {
+    static fromJSON(dict) {
+        console.log("fromJSON of Song object. passed:");
+        console.log(dict);
 
+        return new this(dict.name, dict.album, dict.room, dict.uri);
     }
+
+    toElement(e) {
+        e = e || 'li';
+
+        var ret = '';
+
+        ret += this.name; //add name
+
+        ret = wrap(ret, e); //make it an LI
+
+        ret = $(ret); //turn it into a JQuery element
+
+        //add some data
+        ret.data('name',this.name);
+        ret.data('album',this.album);
+        ret.data('room',this.room);
+        ret.data('uri',this.uri);
+
+        return ret;
+    }
+};
+
+var MusicList = class MusicList {
+
+    static songToElt(song) {
+
+        var name, album, room, URI;
+
+        if(typeof(song) == typeof('')) //if they just had a URI
+        {
+            URI = song;
+            name = song.split('/').slice(-1)[0]; //the last thing before the slash
+        }
+        else //it's a dict
+        {
+            album = song.album;
+            name = song.name;
+            URI = song.uri;
+        }
+
+        var songObj = new Song(name, album, room, URI);
+
+        return songObj.toElement();
+    }
+
+    static roomToElt(room, roomName) {
+
+        var songs = document.createElement('ul');
+
+        for(var songIdx in room) //go through all song names for X room
+        {
+            var song = room[songIdx];
+
+            var songElt = MusicList.songToElt(song);
+
+            songs.appendChild(songElt.get(0));
+        }
+
+        var listItem = document.createElement('li'); //list item containing our list of songs
+
+        listItem = $(listItem).addClass(roomName); //add a class
+
+        listItem.append($('<a>'+roomName+'</a>')) //add an 'a' tag with room name
+
+        listItem.append(songs); //add list of songs
+
+        return listItem;
+    }
+
+    static generateFromJSON(jd) {
+
+        console.log('Passed this: ');
+        console.log(jd);
+
+        var roomList = $('<ul></ul>');
+
+        for(var roomName in jd.rooms) //go through all rooms
+        {
+            var room = jd.rooms[roomName];
+
+            var roomElt = MusicList.roomToElt(room, roomName);
+
+            roomList.append(roomElt);
+        }
+
+        return roomList;
+    }
+
+
+    constructor(songs, jd) {
+
+        jd = jd || musicJson;
+
+        if(songs)
+        {
+            this.songs = songs; //use list of songs
+        }
+        else
+        {
+            this.generateFromJSON(jd); //else, generate list from JSON
+        }
+    }
+
 }
+
+var Room = class Room {
+    constructor(name, songs) {
+        this.name = name;
+        this.songs = songs;
+    }
+
+    static fromJSON(name, dict) {
+        var name = name;
+
+        var songs = [];
+
+        for(var songJ in dict)
+        {
+            var aSong = dict[songJ];
+            songs.push(Song.fromJSON(aSong));
+        }
+
+        return new this(name, songs);
+    }
+};
 
   /***
     * Callback for polling the server.
@@ -55,67 +182,62 @@ var Song = class Song {
     }
   }
 
+/***
+  * Called to update the view (highlighting, 'currently playing', etc)
+  * based on a song and room.
+  */
+function updateMusicViews(room, song)
+{
+    $('#currently-playing h2')[0].innerHTML = song.name;
+
+    $('#currently-playing p')[0].innerHTML = room.name + " caused this.";
+}
+
    /***
      * Called to update the music being played based on a Room object.
      */
-  function updateMusic(room, songs)
+  function updateMusic(room)
   {
-    var songs = songs || musicJson;
-    var room = room || currentRoom;
+    room = room || currentRoom;
 
-    console.log("want to get music for this room: ")
-    console.log(room)
+    if(room)
+    {
+        currentRoom = room;
+    }
 
-    var roomType = room["type"];
+    console.log("Updating music with "+room.name+":");
+    console.log(room);
 
-    var songList = songs["rooms"][roomType];
+    var roomName = room.name;
+
+    var songList = musicJson.rooms[roomName];
 
     //random choice...FOR NOW!!!
     var song = songList[Math.floor(Math.random() * songList.length)];
+    var uri = song.uri;
 
-    playSong(song, room)
-  }
+    updateMusicViews(room, song);
 
-  /***
-    * Play a song by name.
-    * Needs 'room' to be able to highlight both correctly.
-    */
-  function playSong(songName, room)
-  {
-    currentlyPlaying = songName;
-    currentRoom = room;
-
-    var path = mediaPath + songName;
-    var songClass = songName.replace(/[\.\\\/]/g, "_")
-
-//    alert("PLAYIN DIS: '"+songName+"' AT DIS LOC: '"+path+"'.");
-
-    if(songName != $('audio').attr('src')) //if we're asked to play something DIFFERENT
+    if(uri.includes('http'))
     {
-      var audio_core = $('audio').attr('src', path)[0];
-      audio_core.play();
-
-      $($('#currently-playing h2')[0])[0].innerHTML = songName; //display song name
-      $($('#currently-playing p')[0])[0].innerHTML = room.type + " caused this."; //display which room
-
-      $('#music').find("*").removeClass('playing'); //remove 'playing' for ALL others
-
-      var roomElt = $('.'+room.type); //get an li item
-      $(roomElt[0]).addClass('playing'); //show room is playing
-
-      var songElt = roomElt.find('.'+songClass); //get song under it
-
-
-      console.log("Room elt for current song:");
-      console.log(roomElt);
-      console.log("Song elt for current song:");
-      console.log(songElt);
-
-      $($(roomElt[0]).find('.'+songClass)[0]).addClass('playing'); //show which song is playing
+        playSong(uri);
+    }
+    else
+    {
+        playSong(mediaPath + uri);
     }
 
-
   }
+
+/***
+* Play a song by URI.
+*/
+function playSong(uri)
+{
+    $('video').attr('src', uri);
+
+    $('video').get(0).play();
+}
 
 
 /***
@@ -124,6 +246,9 @@ var Song = class Song {
   */
 function mostRecentRoom(data)
 {
+    console.log("Someone wants the most recent room out of this list:");
+    console.log(data);
+
 //if it adheres to my made-up data structure with unnecessary naming schemes
   if(isDict(data) && ("data" in data))
   {
@@ -149,7 +274,8 @@ function mostRecentRoom(data)
           mostRecentTime = mostRecentR["time"];
         }
       }
-      return mostRecentR;
+
+      return Room.fromJSON(mostRecentR.type, musicJson.rooms[mostRecentR.type]);
     }
 
   }
@@ -158,38 +284,20 @@ function mostRecentRoom(data)
 }
 
 
-  /***
-    * Callback for when the music.json loads.
-    */
-  function generateMusicList(data)
-  {
-      console.log("Data: ");
-      console.log(data);
+/***
+* Callback for when the music.json loads.
+*/
+function generateMusicList(musicList)
+{
+    console.log("Passed this:");
+    console.log(musicList);
 
-      var musicList = JSON.parse(data);
+    var musicElt = MusicList.generateFromJSON(musicList);
 
-      console.log("JSON-ed data:");
-      console.log(musicList);
+    $('#music').append(musicElt);
 
-      var path = musicList.path;
-
-      console.log("path is: '"+path+"'.");
-
-      var i = 0;
-
-      for(var roomName in musicList.rooms)
-      {
-        var room = {[roomName] : musicList.rooms[roomName]};
-
-        console.log(i+"th room:");
-        console.log(room);
-
-        $('#music>ul').append(roomToElt(room));
-
-        i++;
-      }
-      return musicList;
-  }
+    return musicElt;
+}
 
 /***
   * Callback for auto-polling.
@@ -207,6 +315,9 @@ function poll(data)
     logData(data, wrap("(auto-poller)",'p'));
 
     var mrr = mostRecentRoom(data);
+
+    console.log("Most recent room's name:"+mrr.name);
+
     updateMusic(mrr);
 
   }
@@ -321,44 +432,17 @@ function poll(data)
         console.log(data);
     }
 
-  /***
-    * Turn a single room into an HTML element.
-    */
-  function roomToElt(room)
-  {
-    var roomName = Object.keys(room)[0]
-    var e = '';
-    var roomList = '';
-
-    e += wrap(roomName, 'a'); // ROOM_NAME
-
-    if(room[roomName].length > 0)
-    {
-      console.log("room '"+roomName+"' has "+room[roomName].length+" elements!")
-
-      for(var i = 0; i<room[roomName].length; i++)
-      {
-        var songClass = room[roomName][i].replace('.','_'); //can't have dots in class names
-        songClass = songClass.replace('/','_'); //can't have slashes in class names
-
-        roomList += wrap(room[roomName][i], 'li', songClass) + '\n';
-      }
-
-      roomList = wrap(roomList, 'ul');
-    }
-
-    e = wrap((e + roomList), 'li', roomName);
-
-    return e;
-  }
 
   // attempt to GET music.json
   $.ajax({
     url: musicPath,
     type: "GET",
     success: function(data){
+      console.log("Response from server for music.json:");
+      console.log(data);
       generateMusicList(data);
-      musicJson = JSON.parse(data);
+      musicJson = data;
+      currentRoom = new Room("ROOM_DEFAULT", musicJson.rooms["ROOM_DEFAULT"]); //just to have a default one
     },
   });
 
@@ -430,14 +514,8 @@ $('#delay-slider').trigger('change'); //to set up label
   });
 
   // when our song ends, play another!
-  $('audio')[0].addEventListener("ended", function(){
-
-//    console.log("Playback ended for song "+currentlyPlaying+" in room "+currentRoom);
-
-//    console.log("Playing another song...");
+  $('video')[0].addEventListener("ended", function(){
 
     updateMusic();
 
-  })
-
-});
+  });

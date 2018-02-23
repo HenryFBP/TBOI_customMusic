@@ -2,14 +2,19 @@
   "path": "media",
   "rooms": {
     "ROOM_NULL": [
-
     ],
     "ROOM_DEFAULT": [
       "henry_voice/hello.mp3"
     ],
     "ROOM_SHOP": [
       "henry_voice/shop1.mp3",
-      "henry_voice/shop2.mp3"
+      "henry_voice/shop2.mp3",
+      {
+        "name": "Shop 3",
+        "uri": "henry_voice/shop3.mp3",
+        "album": "Henry Voice"
+      },
+      "henry_voice/shop4.mp3"
     ],
     "ROOM_ERROR": [
       "henry_voice/error.mp3"

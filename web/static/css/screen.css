@@ -33,9 +33,11 @@ body {
   background-color: lavender;
 }
 
-audio {
+audio,
+video {
   width: -webkit-fill-available;
   margin: 10px;
+  max-height: 2em;
 }
 
 input[type="checkbox"] {
