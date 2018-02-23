@@ -519,3 +519,28 @@ $('#delay-slider').trigger('change'); //to set up label
     updateMusic();
 
   });
+
+
+//someone wants a random song from our current room
+$('#random-room-song').on('click', function(e){
+    updateMusic();
+});
+
+//someone wants a TOTALLY RANDOM song
+$('#random-room').on('click', function(e){
+
+    var roomNames = Object.keys(musicJson.rooms);
+    console.log("All rooms:");
+    console.log(roomNames);
+
+    var randomRoomName = roomNames[Math.floor(Math.random() * roomNames.length)]
+
+    var randomRoomj = musicJson.rooms[randomRoomName ];
+    var randomRoom = Room.fromJSON(randomRoomName, randomRoomj);
+
+    console.log("Random room:");
+    console.log(randomRoomj);
+    console.log(randomRoom);
+
+    updateMusic(randomRoom);
+});
