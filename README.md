@@ -38,7 +38,7 @@ Yes, yes you do.
 
 - Install Python 3.6
 - Install the following packages with pip:
-    - `pip install i havent gotten a list yet sorry lol`
+    - `pip install requests django django-cors-headers`
 
 
 ## If I make this into a twitch app will you sue me?
