@@ -188,9 +188,33 @@ var Room = class Room {
   */
 function updateMusicViews(room, song)
 {
+    $('.playing').removeClass('playing');
+
     $('#currently-playing h2')[0].innerHTML = song.name;
 
     $('#currently-playing p')[0].innerHTML = room.name + " caused this.";
+
+    var relevant = $(':data(name)').filter(function(index) { //get all elements that match song name
+
+        console.log('idx: '+index);
+        console.log($(this).data());
+
+        if($(this).data().name == song.name)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    });
+
+    console.log("Relevant song elements:");
+    console.log(relevant);
+
+    $(relevant.get(0).parentElement.parentElement).addClass('playing');
+
+    relevant.addClass('playing');
 }
 
    /***
