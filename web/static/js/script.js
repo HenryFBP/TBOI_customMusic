@@ -196,8 +196,8 @@ function updateMusicViews(room, song)
 
     var relevant = $(':data(name)').filter(function(index) { //get all elements that match song name
 
-        console.log('idx: '+index);
-        console.log($(this).data());
+//        console.log('idx: '+index);
+//        console.log($(this).data());
 
         if($(this).data().name == song.name)
         {
@@ -209,8 +209,8 @@ function updateMusicViews(room, song)
         }
     });
 
-    console.log("Relevant song elements:");
-    console.log(relevant);
+//    console.log("Relevant song elements:");
+//    console.log(relevant);
 
     $(relevant.get(0).parentElement.parentElement).addClass('playing');
 
