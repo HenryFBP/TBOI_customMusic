@@ -6,7 +6,7 @@ import requests
 import re
 from pprint import pprint
 
-fileRX = re.compile(r'''"title":"(.+?)".+?"file":.+?(http.+?)\"\}''')
+albumRX = re.compile(r'''"title":"(.+?)".+?"file":.+?(http.+?)\"\}''')
 
 cache_albums = {}
 
@@ -33,7 +33,7 @@ def album_to_mp3s(albumURL: str, overwrite: bool=False, cache: bool=True) -> {}:
 
     htmlString = resp.content.decode('utf-8') # binary -> string
 
-    matches = re.findall(fileRX, htmlString) # get all matches
+    matches = re.findall(albumRX, htmlString) # get all matches
 
     songs = {} # dict
 
@@ -46,6 +46,12 @@ def album_to_mp3s(albumURL: str, overwrite: bool=False, cache: bool=True) -> {}:
         cache_albums[albumURL] = songs # cache it if we want to
 
     return songs
+
+def song_to_mp3s(songURL: str, overwrite: bool=False, cache: bool=True):
+    """
+    Turn a bandcamp song URL into a dict of the song's {name:url}.
+    """
+    return album_to_mp3s(songURL, overwrite, cache) #it works so why use a different one? hehe.
 
 if __name__ == '__main__':
     album_to_mp3s('https://murderchannel.bandcamp.com/album/keep-the-fire')

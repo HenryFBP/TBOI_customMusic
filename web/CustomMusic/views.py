@@ -49,23 +49,29 @@ def music(request: HttpRequest):
                 if isinstance(song, str):
 
                     # if it's a link to a bandcamp album
-                    if 'bandcamp' in song and 'bcbits.com/stream/' not in song:
+                    if 'bandcamp' in song:
 
-                        print(f"We're gonna have to get BC MP3 URLS from {song}. ")
-                        songsFromAlbum = apps.album_to_mp3s(song)
+                        #if it's not a bare .mp3 stream file
+                        if 'bcbits.com/stream/' not in song:
 
-                        del dict["rooms"][room][i]  # remove useless URL
+                            # it's a link to an album OR track page from bandcamp
+                            if '/album/' in song or '/track/' in song:
+                                print(f"We're gonna have to get BC MP3 URLS from {song}. ")
+                                songsFromAlbum = apps.album_to_mp3s(song)
 
-                        for name, mp3loc in songsFromAlbum.items():  # go thru all mp3s
+                                del dict["rooms"][room][i]  # remove useless URL
 
-                            songEntry = {"name": name, "uri": mp3loc}
-                            dict["rooms"][room].append(songEntry)
+                                for name, mp3loc in songsFromAlbum.items():  # go thru all mp3s
 
-                    else:  # we don't want to get from bandcamp, but it's still a string...
+                                    songEntry = {"name": name, "uri": mp3loc}
+                                    dict["rooms"][room].append(songEntry)
+
+                    else:  # we don't want to get from bandcamp, but it's still a string... probably
                         songEntry = {"name": song.split('/')[-1], "uri":song}
 
                         dict["rooms"][room][i] = songEntry # replace bare URI with dict entry
-                else: # not a string, don't care.
+
+                else: # not a string, don't care. assume user know's what they're doing.
                     pass
 
                 i += 1 #unconditionally increment
