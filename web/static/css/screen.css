@@ -62,6 +62,10 @@ input[type="number"] {
   color: black;
 }
 
+.clickable:hover {
+  cursor: pointer;
+}
+
 .playing a {
   color: white;
   background-color: black;

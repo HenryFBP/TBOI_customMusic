@@ -1,3 +1,16 @@
+Math.randRange = function(low, high) {
+    if(!high) //they haven't specified a high
+    {
+        high = low; //assume they want 0 thru low
+        low = 0;
+    }
+    return (low + Math.floor(Math.random() * high));
+};
+
+function randomElt(list) {
+    return list[Math.randRange(0,list.length)];
+}
+
 String.prototype.replaceAll = function(search, replacement) {
     var target = this;
     return target.split(search).join(replacement);
