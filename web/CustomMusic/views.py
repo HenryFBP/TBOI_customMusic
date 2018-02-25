@@ -4,6 +4,7 @@ from __future__ import unicode_literals
 
 import json
 
+from pprint import pprint
 import requests
 from django.conf import settings
 from django.http import *
@@ -30,11 +31,10 @@ def index(request: HttpRequest):
 
 # music XML file
 def music(request: HttpRequest):
-
     append = 'music.json'
 
     if request.GET.get('name'):
-        append = request.GET.get('name') # which music file do they want?
+        append = request.GET.get('name')  # which music file do they want?
     else:
         print("Wasn't asked for a specific location for music XML file. using this:")
         print(append)
@@ -43,52 +43,29 @@ def music(request: HttpRequest):
 
     print("Sending music.json file!")
 
-    with open(music_loc) as data_file:
+    respDict = {}
 
-        dict = json.load(data_file)
+    with open(music_loc) as data_file:  # open music.json
 
-        for (room, songs) in dict["rooms"].items():  # go through all rooms
-            print(f"{room}:")
+        dict = json.load(data_file)  # turn into dict
 
-            i = 0
-            for song in songs:  # go through all songs for a room
-                print(f"{i}th song: {song}")
+        respDict["rooms"] = []  # empty processed room list
+        for (roomName, songs) in dict["rooms"].items():  # go through all rooms
+            room = apps.process_room(roomName, songs)  # process it
+            respDict["rooms"].append(room)  # add to response
 
-                #if it's a string
-                if isinstance(song, str):
+        respDict["floors"] = []  # empty processed floor list
+        for (floorName, songs) in dict["floors"].items():  # go though all floors
+            floor = apps.process_room(floorName, songs) # process it
+            respDict["floors"].append(floor)
 
-                    # if it's a link to a bandcamp album
-                    if 'bandcamp' in song:
+    print("Response is:")
+    pprint(respDict)
 
-                        #if it's not a bare .mp3 stream file
-                        if 'bcbits.com/stream/' not in song:
+    with open(music_loc + '.compiled.tmp', 'w') as outfile:  # store prettily in temp file
+        json.dump(respDict, outfile, sort_keys=True, indent=4, separators=(',', ': ',))
 
-                            # it's a link to an album OR track page from bandcamp
-                            if ('/album/' in song) or ('/track/' in song):
-                                print(f"We're gonna have to get BC MP3 URLS from {song}. ")
-                                songsFromAlbum = apps.album_to_mp3s(song)
-
-                                del dict["rooms"][room][i]  # remove useless URL
-
-                                for name, mp3loc in songsFromAlbum.items():  # go thru all mp3s
-
-                                    songEntry = {"name": name, "uri": mp3loc}
-                                    dict["rooms"][room].append(songEntry)
-
-                    else:  # we don't want to get from bandcamp, but it's still a string... probably
-                        songEntry = {"name": song.split('/')[-1], "uri":song}
-
-                        dict["rooms"][room][i] = songEntry # replace bare URI with dict entry
-
-                else: # not a string, don't care. assume user know's what they're doing.
-                    pass
-
-                i += 1 #unconditionally increment
-
-    with open(music_loc + '.compiled.tmp', 'w') as outfile:
-        json.dump(dict, outfile, sort_keys=True, indent=4, separators=(',', ': ',))
-
-    return HttpResponse(json.dumps(dict), content_type="application/json")
+    return HttpResponse(json.dumps(respDict), content_type="application/json")
 
 
 # they want a song
@@ -197,7 +174,7 @@ def post(request: HttpRequest):
         l = LevelEntry(type=data['level'])
         l.save()
 
-    return HttpResponse(json.dumps(request.POST)) # spit it back out at em
+    return HttpResponse(json.dumps(request.POST))  # spit it back out at em
 
 
 def diagnostics(request: HttpRequest):
