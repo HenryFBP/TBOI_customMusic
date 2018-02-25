@@ -10,19 +10,22 @@
 local settings = {}
 
 settings.conf = {
-    ['ModName']="CustomMusic",
+    ['ModName'] = "CustomMusic",
 }
 
 settings.logging = {
-    ['debug']=false,
+    -- debug settings
+    ['debug'] = true,
 
-    ['XPos']=50,
-    ['YPos']=30,
-    ['LineHeight']=10,
-    ['Length']=15,
+    -- console fonts
+    ['XPos'] = 50,
+    ['YPos'] = 30,
+    ['LineHeight'] = 10,
+    ['Length'] = 15,
 
-    ['RoomChangePos']=6,
-    ['HurtLinePos']=14,
+    -- console print locations
+    ['RoomChangePos'] = 6,
+    ['HurtLinePos'] = 14,
 }
 
 

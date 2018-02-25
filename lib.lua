@@ -4,7 +4,6 @@
 --
 
 
-
 local lib = {}
 
 function lib.test()
@@ -26,29 +25,29 @@ end
 function lib.time()
     local s = os.clock()
 
-    s = string.format("%.2f",s);
+    s = string.format("%.2f", s);
 
-    return "["..s.."]:"
+    return "[" .. s .. "]:"
 end
 
 function lib.tableinvert(t)
-   local s={}
-   for k,v in pairs(t) do
-     s[v]=k
-   end
-   return s
+    local s = {}
+    for k, v in pairs(t) do
+        s[v] = k
+    end
+    return s
 end
 
 function lib.getkeys(t)
-  local klst = {}
-  local i = 1
+    local klst = {}
+    local i = 1
 
-  for key, value in pairs(t) do
-    klst[i] = key
-    i = i + 1
-  end
+    for key, value in pairs(t) do
+        klst[i] = key
+        i = i + 1
+    end
 
-  return k
+    return k
 end
 
 return lib
