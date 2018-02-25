@@ -62,8 +62,14 @@ input[type="number"] {
   color: black;
 }
 
-.clickable:hover {
+.clickable {
   cursor: pointer;
+}
+
+.clickable:hover {
+  transition: 100ms ease-in-out;
+  background-color: #f6a8ff;
+  color: #001cbd;
 }
 
 .playing a {
