@@ -25,8 +25,18 @@
 
         <section id="currently-playing">
             <aside id="player-controls">
-                <button id="random-room-song">Random song from room</button>
-                <button id="random-room">Random room</button>
+                <ul>
+                    <li>
+                        <label>Which music list to use</label>
+                        <input type="text" id="which-json" value="music.json">
+                    </li>
+                    <li>
+                        <button id="random-room-song">Random song from room</button>
+                    </li>
+                    <li>
+                        <button id="random-room">Random room</button>
+                    </li>
+                </ul>
             </aside>
             <h2>No song currently playing.</h2>
             <p>No room caused this.</p>

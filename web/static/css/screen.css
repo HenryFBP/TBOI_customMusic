@@ -72,6 +72,20 @@ input[type="number"] {
   color: #001cbd;
 }
 
+#player-controls ul {
+  display: grid;
+  grid-template-rows: 1fr 1fr;
+}
+
+#player-controls ul li {
+  display: grid;
+  grid-template-columns: 1fr max-content;
+}
+
+#player-controls * {
+    width: -webkit-fill-available;
+}
+
 .playing a {
   color: white;
   background-color: black;
