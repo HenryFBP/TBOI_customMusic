@@ -1,6 +1,7 @@
 {
   "path": "media",
   "rooms": {
+    /* room-specific music */
     "ROOM_NULL": [
     ],
     "ROOM_DEFAULT": [
@@ -72,6 +73,45 @@
     ],
     "ROOM_DICE": [
       "henry_voice/dice.mp3"
+    ]
+  },
+  "floors": {
+    /* floor-specific music */
+    "BasementI": [
+    ],
+    "BasementII": [
+    ],
+    "CellarI": [
+    ],
+    "CellarII": [
+    ],
+    "BurningBasementI": [
+    ],
+    "BurningBasementII": [
+    ],
+    "CavesI": [
+    ],
+    "CavesII": [
+    ],
+    "CatacombsI": [
+    ],
+    "CatacombsII": [
+    ],
+    "FloodedCavesI": [
+    ],
+    "FloodedCavesII": [
+    ],
+    "DepthsI": [
+    ],
+    "DepthsII": [
+    ],
+    "NecropolisI": [
+    ],
+    "NecropolisII": [
+    ],
+    "DankDepthsI": [
+    ],
+    "DankDepthsII": [
     ]
   }
 }

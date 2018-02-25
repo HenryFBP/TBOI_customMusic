@@ -14,7 +14,7 @@ from django.views.decorators.http import *
 
 import CustomMusic.apps as apps
 from CustomMusic import *
-from CustomMusic.models import *
+from CustomMusic.models import LevelEntry, RoomEntry
 
 
 # Create your views here.
@@ -186,17 +186,18 @@ def album_to_MP3s(request: HttpRequest):
 @require_POST
 def post(request: HttpRequest):
     data = request.POST
-    respData = f"Thanks for telling us you're in room '{repr(data)}'!"
-    room = data['room']
 
-    print(respData)
-    print("We're going to record it!")
+    if 'room' in data:
+        print(f"Thanks for telling us you're in room '{repr(data)}'!")
+        r = RoomEntry(type=data['room'])
+        r.save()
 
-    r = RoomEntry(type=room)
+    elif 'level' in data:
+        print(f"Thanks for telling us you're in level '{repr(data)}'!")
+        l = LevelEntry(type=data['level'])
+        l.save()
 
-    r.save()
-
-    return HttpResponse(respData)
+    return HttpResponse(json.dumps(request.POST)) # spit it back out at em
 
 
 def diagnostics(request: HttpRequest):

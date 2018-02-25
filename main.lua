@@ -228,6 +228,8 @@ function Mod:levelchange()
     local levelName = level:GetName()
 
     Log("Level name:" .. levelName, i) i = i + 1
+
+    send(('level='..levelName), true) --tell server we've changed levels
 end
 
 --- Called to tell the server we changed rooms.
@@ -249,7 +251,7 @@ function Mod:roomchange()
 
     if lastRoomID ~= roomType then -- we should change music if we are in a different room
 
-        send(typename, true) -- tell the server we've changed rooms
+        send(("room="..typename), true) -- tell the server we've changed rooms
 
         Log("Sending that we've changed rooms!", i) i = i + 1
 
