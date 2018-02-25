@@ -42,7 +42,7 @@ def album_to_mp3s(albumURL: str, overwrite: bool=False, cache: bool=True) -> {}:
 
     pprint(songs)
 
-    if(cache):
+    if cache:
         cache_albums[albumURL] = songs # cache it if we want to
 
     return songs

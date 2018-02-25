@@ -1,4 +1,6 @@
 
+var _KEY_ENTER = 13;
+
 var _debug = false;
 
 var host = "localhost";
@@ -186,6 +188,21 @@ var Room = class Room {
         return new this(name, songs);
     }
 };
+
+/***
+  * Callback for music json loading.
+  */
+function updateMusicJSON(data)
+{
+    console.log("Response from server for music json file:");
+    console.log(data);
+
+    generateMusicList(data);
+    musicJson = data;
+
+    currentRoom = new Room("ROOM_DEFAULT", musicJson.rooms["ROOM_DEFAULT"]); //just to have a default one
+}
+
 
   /***
     * Callback for polling the server.
@@ -579,19 +596,12 @@ function poll(data)
     }
 
 
-  // attempt to GET music.json
+  // attempt to GET music.json when page loads
   $.ajax({
     url: musicPath,
     type: "GET",
-    success: function(data){
-      console.log("Response from server for music.json:");
-      console.log(data);
-      generateMusicList(data);
-      musicJson = data;
-      currentRoom = new Room("ROOM_DEFAULT", musicJson.rooms["ROOM_DEFAULT"]); //just to have a default one
-
-
-
+    success: function(data) {
+        updateMusicJSON(data);
     },
   });
 
@@ -630,7 +640,7 @@ $('#delay-slider').change(function(){
 $('#delay-slider').trigger('change'); //to set up label
 
   // someone wants to poll manually
-  $('#poll>button').on('click', function(event){
+  $('#poll>button').on('click', function(event) {
 
     // tell em to stop clickin.
     $('#poll>button').addClass('wait');
@@ -663,7 +673,7 @@ $('#delay-slider').trigger('change'); //to set up label
   });
 
   // when our song ends, play another!
-  $('video')[0].addEventListener("ended", function(){
+  $('video')[0].addEventListener("ended", function() {
 
     updateMusic();
 
@@ -671,12 +681,12 @@ $('#delay-slider').trigger('change'); //to set up label
 
 
 //someone wants a random song from our current room
-$('#random-room-song').on('click', function(e){
+$('#random-room-song').on('click', function(e) {
     updateMusic();
 });
 
 //someone wants a TOTALLY RANDOM song
-$('#random-room').on('click', function(e){
+$('#random-room').on('click', function(e) {
 
     var roomNames = Object.keys(musicJson.rooms);
     console.log("All rooms:");
@@ -690,4 +700,28 @@ $('#random-room').on('click', function(e){
     console.log(randomRoom);
 
     updateMusic(randomRoom);
+});
+
+$('#which-json')[0].addEventListener('keyup', function(event) {
+
+    if(event.keyCode === _KEY_ENTER) //they want some different music!
+    {
+        var elt = event.target;
+
+        //console.log(elt);
+
+        //delete all previous music
+        $('#music ul').remove()
+
+        // attempt to GET json the user wants
+        $.ajax({
+            url: musicPath,
+            data: {"name": elt.value},
+            type: "GET",
+            success: function(data) {
+                updateMusicJSON(data);
+            },
+        });
+    }
+
 });

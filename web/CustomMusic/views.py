@@ -30,7 +30,16 @@ def index(request: HttpRequest):
 
 # music XML file
 def music(request: HttpRequest):
-    music_loc = settings.PROJECT_PATH + settings.STATIC_URL + 'music.json'
+
+    append = 'music.json'
+
+    if request.GET.get('name'):
+        append = request.GET.get('name') # which music file do they want?
+    else:
+        print("Wasn't asked for a specific location for music XML file. using this:")
+        print(append)
+
+    music_loc = settings.PROJECT_PATH + settings.STATIC_URL + append
 
     print("Sending music.json file!")
 
@@ -55,7 +64,7 @@ def music(request: HttpRequest):
                         if 'bcbits.com/stream/' not in song:
 
                             # it's a link to an album OR track page from bandcamp
-                            if '/album/' in song or '/track/' in song:
+                            if ('/album/' in song) or ('/track/' in song):
                                 print(f"We're gonna have to get BC MP3 URLS from {song}. ")
                                 songsFromAlbum = apps.album_to_mp3s(song)
 
