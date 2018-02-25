@@ -42,9 +42,9 @@ else
     for i = 1, settings.logging.Length do
         Log("-", i)
     end
-    Log("'" .. settings.conf.ModName .. "' mod init.", i); i = i + 1
-    Log(([[CWD: "]] .. _cwd .. [["]]), i); i = i + 1
-    Log(([[Moddir: "]] .. _moddir .. [["]]), i); i = i + 1
+    Log("'" .. settings.conf.ModName .. "' mod init.", i) i = i + 1
+    Log(([[CWD: "]] .. _cwd .. [["]]), i) i = i + 1
+    Log(([[Moddir: "]] .. _moddir .. [["]]), i) i = i + 1
 end
 
 local Mod = RegisterMod(settings.conf.ModName, 1)
@@ -138,10 +138,10 @@ end
 function send(message)
     local command = nil
     if _os == [[windows]] then
---        command = 'cmd /K "'.._moddir..settings.paths.script_messenger_bat..'" '..message
+        --        command = 'cmd /K "'.._moddir..settings.paths.script_messenger_bat..'" '..message
         command = [[cmd /K "]] .. _moddir .. settings.paths.script_messenger_bat .. [[" ]] .. message
         if settings.logging.debug then
---                  command = command .. " & PAUSE" --for debug
+            --                  command = command .. " & PAUSE" --for debug
         end
     else
         command = 'py "' .. _moddir .. settings.paths.script_messenger .. '" ' .. message
@@ -193,14 +193,14 @@ function Mod:onRender()
 
     local s = settings.conf.ModName .. " mod. Isaac x=" .. x .. ",y=" .. y
 
-    Log(s, i); i = i + 1
+    Log(s, i) i = i + 1
 
-    Log("I think your OS is: " .. _os, i); i = i + 1
-    Log("last exec: " .. _last_executed, i); i = i + 1
-    Log('settings' .. _moddir, i); i = i + 1
-    Log(table.tostring(settings), i); i = i + 1
---      Log("settings.test: "..settings.test()); i=i+1
---      Log("settings.paths: "..table.tostring(settings.paths)); i=i+1
+    Log("I think your OS is: " .. _os, i) i = i + 1
+    Log("last exec: " .. _last_executed, i) i = i + 1
+    Log('settings' .. _moddir, i) i = i + 1
+    Log(table.tostring(settings), i) i = i + 1
+    --      Log("settings.test: "..settings.test()) i=i+1
+    --      Log("settings.paths: "..table.tostring(settings.paths)) i=i+1
 
     displayLog()
 end
@@ -212,7 +212,7 @@ function Mod:immortality()
 
     p:SetFullHearts()
 
-    Log("u got hurt :'(", i); i = i + 1
+    Log("u got hurt :'(", i) i = i + 1
 end
 
 --- Called to tell the server we changed rooms.
@@ -228,22 +228,18 @@ function Mod:roomchange()
         lastRoomID = RoomID
     end
 
-    Log("Room type we just entered: " .. RoomID .. " aka " .. table.invert(RoomType)[RoomID], i)
-    i = i + 1
+    Log("Room type we just entered: " .. RoomID .. " aka " .. table.invert(RoomType)[RoomID], i) i = i + 1
 
-    Log("Comparing '" .. lastRoomID .. "' and '" .. RoomID .. '".', i)
-    i = i + 1
+    Log("Comparing '" .. lastRoomID .. "' and '" .. RoomID .. '".', i) i = i + 1
 
     if lastRoomID ~= RoomID then -- we should change music if we are in a different room
 
         send(typename, true) -- tell the server we've changed rooms
 
-        Log("Sending that we've changed rooms!", i)
-        i = i + 1
+        Log("Sending that we've changed rooms!", i) i = i + 1
 
     else
-        Log("Changed rooms but not the room type. Not sending.", i)
-        i = i + 1
+        Log("Changed rooms but not the room type. Not sending.", i) i = i + 1
     end
 
     lastRoomID = RoomID -- record what we just changed to
