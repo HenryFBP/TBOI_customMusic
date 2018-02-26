@@ -205,6 +205,10 @@ function Mod:onRender()
     displayLog()
 end
 
+function denum(tbl, id)
+    return table.invert(tbl)[id]
+end
+
 function Mod:immortality()
 
     local p = Isaac.GetPlayer(0)
@@ -215,26 +219,42 @@ function Mod:immortality()
     Log("u got hurt :'(", i) i = i + 1
 end
 
+--- Called to tell the server we changed floors.
+function Mod:floorchange()
+
+    local i = settings.logging.FloorChangePos
+
+    local floor = Game():GetLevel()
+    local floorName = floor:GetName()
+
+    Log("Floor name:" .. floorName, i) i = i + 1
+
+    send(('floor=' .. floorName), true) --tell server we've changed floors
+end
+
 --- Called to tell the server we changed rooms.
 function Mod:roomchange()
 
     local i = settings.logging.RoomChangePos
 
     local room = Game():GetRoom()
-    local RoomID = room:GetType()
-    local typename = table.invert(RoomType)[RoomID]
+    local roomType = room:GetType()
+    local typename = denum(RoomType, roomType)
+
+    local floor = Game():GetLevel()
+    local floorName = floor:GetName()
 
     if not lastRoomID then -- if this is the first room we've been to
-        lastRoomID = RoomID
+        lastRoomID = roomType
     end
 
-    Log("Room type we just entered: " .. RoomID .. " aka " .. table.invert(RoomType)[RoomID], i) i = i + 1
+    Log("Room type we just entered: " .. roomType .. " aka " .. typename, i) i = i + 1
 
-    Log("Comparing '" .. lastRoomID .. "' and '" .. RoomID .. '".', i) i = i + 1
+    Log("Comparing '" .. lastRoomID .. "' and '" .. roomType .. '".', i) i = i + 1
 
-    if lastRoomID ~= RoomID then -- we should change music if we are in a different room
+    if lastRoomID ~= roomType then -- we should change music if we are in a different room
 
-        send(typename, true) -- tell the server we've changed rooms
+        send(("room=" .. typename..",floor="..floorName), true) -- tell the server we've changed rooms, send floor to be safe.
 
         Log("Sending that we've changed rooms!", i) i = i + 1
 
@@ -242,7 +262,7 @@ function Mod:roomchange()
         Log("Changed rooms but not the room type. Not sending.", i) i = i + 1
     end
 
-    lastRoomID = RoomID -- record what we just changed to
+    lastRoomID = roomType -- record what we just changed to
 end
 
 -- add debug stuff if we wanna
@@ -253,4 +273,4 @@ end
 
 Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, Mod.start, EntityType.ENTITY_PLAYER)
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, Mod.roomchange, EntityType.ENTITY_PLAYER)
---Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, Mod.levelchange, EntityType.ENTITY_PLAYER)
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, Mod.floorchange, EntityType.ENTITY_PLAYER)

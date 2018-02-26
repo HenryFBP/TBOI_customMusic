@@ -1,9 +1,15 @@
 try:
     import sys
     import os
+    import time
 except Exception as e:
     print(e)
     input("Couldn't import basic modules.")
+
+
+def wait(t=60 * 10, m="Waiting 'cuz debug mode is on."):
+    print(m)
+    time.sleep(t)
 
 
 class settings:
@@ -19,24 +25,33 @@ class settings:
     server_script = '/web/manage.py'
     script_path = os.path.dirname(sys.argv[0])
 
-    message = "defaultsettings.message"
+    message = {"defaultsettings": "message"}
 
 
 try:
     import requests
 except:
-    input("'requests' library not found.\nTry 'pip install requests'?")
+    wait(m="'requests' library not found.\nTry 'pip install requests'?")
 
 if isinstance(sys.argv, list) and len(sys.argv) > 1:
 
-    settings.message = ""  # clear message if we have arg
+    args = ""
+    settings.message = {}
 
     for i in range(1, len(sys.argv)):
-        settings.message += sys.argv[i]
+        args += sys.argv[i].replace(' ','')
+
+    print("Args: ")
+    print(args)
+
+    argsList = args.split(',')
+
+    for arg in argsList:
+        argDict = arg.split('=')
+        settings.message[argDict[0]] = argDict[1]
 
 print(f'sys.argv: {repr(sys.argv)}')
 print(f'Script directory: {settings.script_path}')
-print(f"Sending message '{settings.message}'")
 
 
 def startServerWin(debug=False, append=''):
@@ -74,30 +89,24 @@ def startServer(os=settings.os_type, debug=False, append=''):
     return None
 
 
-try:
-    r = requests.post(f'http://{settings.host}:{str(settings.port)}/post/', data={"room": settings.message})
+def sendMessage(message, host=settings.host, port=settings.port):
+    try:
+        r = requests.post(f'http://{host}:{str(port)}/post/', data=message)
 
-    print(f"Sent '{settings.message}' to '{settings.host}:{str(settings.port)}'")
+        print(f"Sent '{message}' to '{host}:{str(port)}'")
 
-    print(r.status_code)
+        print(r.status_code)
 
-    r.close()
+        r.close()
 
-    if settings.debug:
-        input("Waiting 'cuz debug mode is on.")
-
-except Exception as e:
-    print(f'I\'m going to assume that the "{settings.mod_name}" server is NOT running, so I\'m going to start it.')
-    print('')
-    startServer(debug=settings.debug)
+    except Exception as e:
+        print(f'I\'m going to assume that the "{settings.mod_name}" server is NOT running, so I\'m going to start it.')
+        print('')
+        startServer(debug=settings.debug)
 
     if settings.debug:
-        input("Waiting 'cuz debug mode is on.")
+        wait()
 
-    sys.exit(1)
+sendMessage(settings.message)
 
-except Exception as e:
-    print("Unhandled exception:")
-    print(e)
-
-    input("Sorry.")
+sys.exit(1)

@@ -91,7 +91,7 @@ input[type="number"] {
   background-color: black;
 }
 
-li.playing {
+ul.playing li.playing {
   color: white;
   background-color: black;
 }
