@@ -3,8 +3,8 @@
 from __future__ import unicode_literals
 
 import json
-
 from pprint import pprint
+
 import requests
 from django.conf import settings
 from django.http import *
@@ -15,7 +15,7 @@ from django.views.decorators.http import *
 
 import CustomMusic.apps as apps
 from CustomMusic import *
-from CustomMusic.models import LevelEntry, RoomEntry
+from CustomMusic.models import FloorEntry, RoomEntry
 
 
 # Create your views here.
@@ -56,7 +56,7 @@ def music(request: HttpRequest):
 
         respDict["floors"] = []  # empty processed floor list
         for (floorName, songs) in dict["floors"].items():  # go though all floors
-            floor = apps.process_room(floorName, songs) # process it
+            floor = apps.process_room(floorName, songs)  # process it
             respDict["floors"].append(floor)
 
     print("Response is:")
@@ -101,25 +101,28 @@ def shutdown(request: HttpRequest):
 def query(request: HttpRequest):
     print("Being asked if we should change songs.")
 
-    all_rooms = RoomEntry.objects.all()
+    rooms = RoomEntry.objects.all()
+    floors = FloorEntry.objects.all()
 
-    print("All room changes: ")
-    print(repr(all_rooms))
-
-    if all_rooms.count() <= 0:
+    if rooms.count() <= 0 and floors.count() <= 0:
         print("No changes. Returning '0'.")
         return HttpResponse('0')
 
-    print("Changes were detected! Sending ALL previous rooms visited...")
+    print("Changes were detected! Sending ALL previous rooms/floors visited...")
 
-    dicts = [obj.as_dict() for obj in all_rooms]
-    jsondata = json.dumps({"data": dicts})
+    dicts = {
+        "rooms": [r.as_dict() for r in rooms],
+        "floors": [l.as_dict() for l in floors]
+    }
+
+    jsondata = json.dumps(dicts)
 
     print("Returning this:")
     print(jsondata)
 
-    RoomEntry.objects.all().delete()  # delete ALL rooms because we sent it to browser
-    print("Deleted all room visits.")
+    # delete ALL stuffs because we sent it to browser
+    RoomEntry.objects.all().delete()
+    FloorEntry.objects.all().delete()
 
     return HttpResponse(jsondata, content_type="application/json")
 
@@ -165,13 +168,13 @@ def post(request: HttpRequest):
     data = request.POST
 
     if 'room' in data:
-        print(f"Thanks for telling us you're in room '{repr(data)}'!")
         r = RoomEntry(type=data['room'])
+        print(f"Thanks for telling us you're in room '{repr(r)}'!")
         r.save()
 
-    elif 'level' in data:
-        print(f"Thanks for telling us you're in level '{repr(data)}'!")
-        l = LevelEntry(type=data['level'])
+    if 'floor' in data:
+        l = FloorEntry(type=data['floor'])
+        print(f"Thanks for telling us you're in floor '{repr(l)}'!")
         l.save()
 
     return HttpResponse(json.dumps(request.POST))  # spit it back out at em

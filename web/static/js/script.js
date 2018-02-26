@@ -14,35 +14,32 @@ var pollPath = "http://"+host+":"+port+"/"+pollFile; //to ask about what rooms a
 
 var mediaPath = "http://"+host+":"+port+"/static/media/";
 
-var musicJson = {}; //will be updated later.
+var musicJson = {}; //raw JSON file
+var musicList = {}; //list of Rooms and Floors
 
 var pollerInterval = null; //will later be setInterval(function(){...}, 1000) or something
 var pollTime = 3000; //poll every THIS MANY milliseconds
 
 var currentlyPlaying = null; //what song is currently playing?
-var currentRoom = null; //what song are we in right now?
-
-
+var currentRoom = null; //what room are we in right now?
+var currentFloor = null; //what floor are we in right now?
 
 
   $('#nojs').hide(); //don't show 'WHY NO JS??' msg
 
-//https://stackoverflow.com/questions/8628413/jquery-find-the-element-with-a-particular-custom-attribute
 var Song = class Song {
     constructor(name, album, room, uri) {
         this.name = name;
         this.album = album;
         this.room = room;
         this.uri = uri;
+        this.DOM = this.DOM || null;
     }
 
     /***
       * Turn a dictionary representation of a Song object into a Song object.
       */
     static fromJSON(dict) {
-        //console.log("fromJSON of Song object. passed:");
-        //console.log(dict);
-
         return new this(dict.name, dict.album, dict.room, dict.uri);
     }
 
@@ -60,244 +57,418 @@ var Song = class Song {
             }
         }
     }
+    /***
+      * Turn a Song into a DOM elt.
+      */
+    generateDOM() {
 
-    toElement(e) {
-        e = e || 'li';
-
-        var ret = '';
-
-        ret += this.name; //add name
-
-        ret = wrap(ret, e); //make it an LI
-
-        ret = $(ret); //turn it into a JQuery element
-
-        //add some data
-        ret.data('name',this.name);
-        ret.data('album',this.album);
-        ret.data('room',this.room);
-        ret.data('uri',this.uri);
-
-        return ret;
-    }
-};
-
-var MusicList = class MusicList {
-
-    static songToElt(song) {
-
-        //console.log("MusicList.songToElt was passed this song:");
-        //console.log(song);
-
-        var name, album, room, URI;
-
-        if(typeof(song) == typeof('')) //if they just had a URI
-        {
-            URI = song;
-            name = song.split('/').slice(-1)[0]; //the last thing before the slash
-        }
-        else //it's a dict
-        {
-            album = song.album;
-            name = song.name;
-            URI = song.uri;
+        if(this.DOM) {
+            return this.DOM;
         }
 
-        var songObj = new Song(name, album, room, URI);
+        var dom = $(wrap(this.name, 'li'))[0]; //make it an LI
 
-        return songObj.toElement();
-    }
+        $(dom).data('song',this); //add some data
 
-    static roomToElt(room, roomName) {
+        $(dom).on('click', function(event) {
+            var song = $(event.currentTarget).data().song;
+            playSong(song);
+            updateMusicViews(song);
+        });
 
-        var songs = document.createElement('ul');
+        $(dom).addClass('clickable');
 
-        for(var songIdx in room) //go through all song names for X room
-        {
-            var song = room[songIdx];
-
-            var songElt = MusicList.songToElt(song);
-
-            songs.appendChild(songElt.get(0));
-        }
-
-        var listItem = document.createElement('li'); //list item containing our list of songs
-
-        listItem = $(listItem).addClass(roomName); //add a class
-
-        listItem.append($('<a>'+roomName+'</a>')) //add an 'a' tag with room name
-
-        listItem.append(songs); //add list of songs
-
-        return listItem;
-    }
-
-    static generateFromJSON(jd) {
-
-        console.log('Passed this: ');
-        console.log(jd);
-
-        var roomList = $('<ul></ul>');
-
-        for(var roomName in jd.rooms) //go through all rooms
-        {
-            var room = jd.rooms[roomName];
-
-            var roomElt = MusicList.roomToElt(room, roomName);
-
-            roomList.append(roomElt);
-        }
-
-        return roomList;
-    }
-
-
-    constructor(songs, jd) {
-
-        jd = jd || musicJson;
-
-        if(songs)
-        {
-            this.songs = songs; //use list of songs
-        }
-        else
-        {
-            this.generateFromJSON(jd); //else, generate list from JSON
-        }
-    }
-
-}
-
-var Room = class Room {
-    constructor(name, songs) {
-        this.name = name;
-        this.songs = songs;
-    }
-
-    static fromJSON(name, dict) {
-        var name = name;
-
-        var songs = [];
-
-        for(var songJ in dict)
-        {
-            var aSong = dict[songJ];
-            songs.push(Song.fromJSON(aSong));
-        }
-
-        return new this(name, songs);
+        this.DOM = dom;
+        return dom;
     }
 };
 
 /***
+  * A collection of all Rooms and Floors.
+  *
+  * Responsible for creating an HTML element with all songs.
+  */
+var MusicList = class MusicList {
+
+    constructor(data) {
+        this.data = data;
+        this.floors = data.floors;
+        this.rooms = data.rooms;
+    }
+
+    /***
+      * Generate a DOM with all floors and rooms.
+      *
+      * Includes all event listeners, etc.
+      */
+    generateDOM() {
+
+        var dom = $('<ul>')[0]; //root ul
+
+        var floors = $('<li id="floors"> <h2>Floors</h1> <ul></ul> </li>')[0]; //list of floors
+        for(var i in this.floors) //go through all floors
+        {
+            var floor = this.floors[i];
+
+            $(floors).find('ul')[0].appendChild(floor.generateDOM()); //add a floor to list of floors
+        }
+        dom.appendChild(floors); //add list of floors
+
+        var rooms = $('<li id="rooms"> <h2>Rooms</h1> <ul></ul> </li>')[0]; //list of rooms
+        for(var i in this.rooms) //go through all rooms
+        {
+            var room = this.rooms[i];
+
+            $(rooms).find('ul')[0].appendChild(room.generateDOM()); //add a room as a DOM
+        }
+        dom.appendChild(rooms);
+
+        return dom;
+    }
+
+}
+
+/***
+  * A single room. Can have many songs.
+  */
+var Room = class Room {
+    constructor(name, songs) {
+        this.name = name;
+        this.songs = songs;
+        this.DOM = this.DOM || null;
+    }
+
+    /***
+      * Turn a roomType string into a Room.
+      */
+    static fromType(type) {
+        if(!type) {
+            return null;
+        }
+
+        for(var i in musicList.rooms)
+        {
+            var room = musicList.rooms[i];
+
+            if(room.name == type)
+            {
+                return room;
+            }
+        }
+    }
+
+    /***
+      * Turn raw data into a Room.
+      */
+    static fromJSON(dict) {
+        var name = Object.keys(dict)[0];
+        var data = dict[name];
+
+        var songs = [];
+
+        for(var i in data)
+        {
+            var song = Song.fromJSON(data[i]);
+            songs.push(song);
+        }
+
+        return new this(name, songs);
+    }
+
+    /***
+      * Turn a Room into a list of Song elements, as a DOM object.
+      * If this function has not been called, it will store the result for later.
+      * If it has, then it will return its cached DOM object.
+      */
+    generateDOM() {
+
+        if(this.DOM) {
+            return this.DOM;
+        }
+
+        var dom = $('<ul>')[0];
+
+        var label = $('<h3>'+this.name+'</h3>').addClass('clickable');
+
+        label.on('click', function(event) { //event listener for clicking on Room label
+            var elt = event.currentTarget;
+
+            var room = $(elt.parentElement).data().room
+
+            currentRoom = room; //assume they want to change their current room
+
+            var songs = room.songs;
+            var song = randomElt(songs);
+
+            playSong(song);
+            updateMusicViews(song);
+
+        });
+
+        dom.append(label[0]); //add label
+
+        for(var i in this.songs) {
+            var song = this.songs[i];
+
+            var songdom = song.generateDOM();
+
+            dom.appendChild(songdom);
+        }
+
+        $(dom).data("room", this); //store Room in elt
+
+//        console.log(dom);
+
+        this.DOM = dom;
+        return dom;
+    }
+};
+
+/***
+  * A single floor. Can have many songs.
+  */
+var Floor = class Floor {
+    constructor(name, songs) {
+        this.name = name;
+        this.songs = songs;
+
+        this.DOM = this.DOM || null;
+    }
+
+    /***
+      * Turn raw data into a Floor object.
+      */
+    static fromJSON(dict) {
+        var name = Object.keys(dict)[0];
+        var data = dict[name];
+
+        var songs = [];
+
+        for(var i in data) {
+            var song = Song.fromJSON(data[i]);
+            songs.push(song);
+        }
+
+        return new this(name, songs);
+    }
+
+    /***
+      * Turn a floorType string into a Room.
+      */
+    static fromType(type) {
+        if(!type) {
+            return null;
+        }
+
+        for(var i in musicList.floors)
+        {
+            var floor = musicList.floors[i];
+
+            if(floor.name == type)
+            {
+                return floor;
+            }
+        }
+    }
+
+    /***
+      * Turn a Floor into a list of Song elements, as a DOM object.
+      *
+      * If this function has not been called, it will store the result for later.
+      * If it has, then it will return its cached DOM object.
+      */
+    generateDOM() {
+
+        if(this.DOM) {
+            return this.DOM;
+        }
+
+        var dom = $('<ul>')[0];
+
+        var label = $('<h3>'+this.name+'</h3>').addClass('clickable');
+
+        label.on('click', function(event) { //event listener for clicking on Floor label
+            var elt = event.currentTarget;
+
+            var floor = $(elt.parentElement).data().floor;
+
+            var songs = floor.songs;
+
+            currentFloor = floor; //assume they want to play this floor instead of their current one
+
+            var song = randomElt(songs);
+            playSong(song);
+            updateMusicViews(song);
+
+        });
+
+        dom.append(label[0]); //add label
+
+        for(var i in this.songs) {
+            var song = this.songs[i];
+
+            var songdom = song.generateDOM();
+
+            dom.appendChild(songdom);
+        }
+
+        $(dom).data("floor", this); //store floor in elt
+
+//        console.log(dom);
+
+        this.DOM = dom;
+        return dom;
+    }
+}
+
+/***
   * Callback for music json loading.
   */
-function updateMusicJSON(data)
-{
+function updateMusicJSON(data) {
     console.log("Response from server for music json file:");
     console.log(data);
 
-    generateMusicList(data);
-    musicJson = data;
+    musicJson = data; //raw data
+    musicList = new MusicList(parseMusicJSON(musicJson)); //parsed data
 
-    currentRoom = new Room("ROOM_DEFAULT", musicJson.rooms["ROOM_DEFAULT"]); //just to have a default one
+    $('#music')[0].appendChild(musicList.generateDOM()); //add our music list
+}
+
+/***
+  * Turns a raw music.json file into a parsed, object version.
+  */
+function parseMusicJSON(data) {
+    var mj = {}
+
+    mj.floors = [];
+    for(var i in data.floors) {
+        var floorj = data.floors[i];
+
+        var floor = Floor.fromJSON(floorj);
+
+        mj.floors.push(floor);
+    }
+
+    mj.rooms = [];
+    for(var i in data.rooms) {
+        var roomj = data.rooms[i];
+
+        var room = Room.fromJSON(roomj);
+
+        mj.rooms.push(room);
+    }
+
+    return mj;
 }
 
 
   /***
     * Callback for polling the server.
     */
-  function pollServer(data)
-  {
-    if(data === '0')
-    {
+  function pollServer(data) {
+    if(data === '0') {
       console.log("No room change yet.")
     }
-    else
-    {
+    else {
      console.log("O BOY ROOM CHANGE:")
      console.log(data)
     }
   }
 
 /***
-  * Called to update the view (highlighting, 'currently playing', etc)
-  * based on a Song and Room.
+  * Updates the music based on a floor and/or room.
   */
-function updateMusicViews(room, song)
+function updateMusic(mrps) {
+
+    mrps = mrps || null;
+
+    if(mrps != null) {
+
+        if(mrps.room != null) {
+            currentRoom = mrps.room;
+        }
+
+        if(mrps.floor != null) {
+            currentFloor = mrps.floor;
+        }
+
+    }
+
+    console.log("Most recent places:");
+    console.log(mrps);
+
+    if(currentRoom.name == "ROOM_DEFAULT") { //we want to play the floor's music as it's the default floor
+
+        console.log("User is in default room. playing random song from this Floor:");
+        console.log(currentFloor);
+
+        var song = randomElt(currentFloor.songs);
+        console.log("Playing this song:");
+        console.log(song);
+
+        playSong(song);
+        updateMusicViews(song);
+    }
+    else { //they're in a treasure/curse/boss/etc room, don't care about what floor.
+        var song = randomElt(currentRoom.songs);
+
+        playSong(song);
+        updateMusicViews(song);
+    }
+
+}
+
+
+/***
+  * Called to update the view (highlighting, 'currently playing', etc)
+  * based on a Song.
+  */
+function updateMusicViews(song)
 {
-    console.log("passed this room + song:");
-    console.log(room);
+    console.log("passed this song:");
     console.log(song);
+
+    var place = $(song.DOM.parentElement).data();
+    console.log("found this place:");
+    console.log(place);
+
+    var placeType = Object.keys(place)[0]; //is it a room or a floor?
+
 
     $('.playing').removeClass('playing');
 
     $('#currently-playing h2')[0].innerHTML = song.name;
 
-    $('#currently-playing p')[0].innerHTML = room.name + " caused this.";
+    $('#currently-playing p')[0].innerHTML = place[placeType].name + " caused this.";
 
-    var relevant = $(':data(name)').filter(function(index) { //get all elements that match song name
+    var relevant = $(song.DOM);
 
-//        console.log('idx: '+index);
-//        console.log($(this).data());
-
-        if($(this).data().name == song.name)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    });
-
-//    console.log("Relevant song elements:");
-//    console.log(relevant);
-
-    $(relevant.get(0).parentElement.parentElement).addClass('playing');
+    $(relevant.get(0).parentElement).addClass('playing');
 
     relevant.addClass('playing');
 }
 
-   /***
-     * Called to update the music being played based on a Room object.
-     */
-  function updateMusic(room, song)
-  {
-    console.log("Passed room and song:");
-    console.log(room);
-    console.log(song);
+/***
+  * Play a random song from a Room or Floor.
+  */
+function playSongByPlace(place) {
 
-    room = room || currentRoom;
+    var song = randomElt(place.songs);
 
-    if(room != null)
-    {
-        currentRoom = room;
-    }
-
-    console.log("Updating music with "+room.name+":");
-    console.log(room);
-
-    var roomName = room.name;
-
-    var songList = musicJson.rooms[roomName];
-    console.log("Song list:");
-    console.log(songList);
-
-    //random choice...FOR NOW!!!
-    song = song || randomElt(songList);
-    var uri = song.uri;
-
-    playSong(uri);
-
-    updateMusicViews(room, song);
-  }
+    playSong(song);
+}
 
 /***
-* Play a song by URI.
-*/
-function playSong(uri)
-{
+  * Play a Song by a Song object.
+  */
+function playSong(song) {
+
+    if(!song || !song.uri) {
+        return;
+    }
+
+    var uri = song.uri;
+
     var v = $('video');
 
     v[0].pause();
@@ -319,46 +490,58 @@ function playSong(uri)
 
 
 /***
-  * Called to get the most recent room out of the list of rooms.
-  * @return The most recent Room object.
+  * Gets most recent object out of a list of objects.
   */
-function mostRecentRoom(data)
+function mostRecentObject(objects, name)
 {
-    console.log("Someone wants the most recent room out of this list:");
+    if(!objects) {
+        return null;
+    }
+
+    name = name || 'time';
+    var mro = objects[0];
+
+    for(var i in objects)
+    {
+        var object = objects[i];
+
+        if(objects[name] > mro[name])
+        {
+            mro = object;
+        }
+    }
+
+//    console.log("Most recent object:");
+//    console.log(mro);
+
+    return mro;
+}
+
+/***
+  * Called to get the most recent place out of the list of rooms & floors.
+  * @return The most recent Room/Floor object(s).
+  */
+function mostRecentPlaces(data)
+{
+    var ret = {};
+
+    console.log("Someone wants the most recent place out of this list:");
     console.log(data);
 
-//if it adheres to my made-up data structure with unnecessary naming schemes
-  if(isDict(data) && ("data" in data))
-  {
-    var list = data["data"];
+    var mrroom = mostRecentObject(data.rooms);
+    var mrfloor = mostRecentObject(data.floors);
 
-    if(list.length <= 0) //if its empty
-    {
-      return null;
+    if(mrroom) {
+        var room = Room.fromType(mrroom.type);
+        ret["room"] = room;
     }
 
-    else
-    {
-      mostRecentR = list[0];
-      mostRecentTime = mostRecentR["time"];
-
-      //compare em all!!
-
-      for(var i = 0; i < list.length; i++)
-      {
-        if(list[i]["time"] > mostRecentTime)
-        {
-          mostRecentR = list[i];
-          mostRecentTime = mostRecentR["time"];
-        }
-      }
-
-      return Room.fromJSON(mostRecentR.type, musicJson.rooms[mostRecentR.type]);
+    if(mrfloor) {
+        var floor = Floor.fromType(mrfloor.type);
+        ret["floor"] = floor;
     }
 
-  }
-
-  return null;
+    return ret;
 }
 
 /***
@@ -366,100 +549,15 @@ function mostRecentRoom(data)
   */
 function roomByName(roomName)
 {
-    return Room.fromJSON(roomName, musicJson.rooms[roomName]);
-}
+    for(var i in musicList.rooms)
+    {
+        var room = musicList.rooms[i];
 
-
-/***
-* Callback for when the music.json loads.
-*/
-function generateMusicList(musicList)
-{
-    //console.log("Passed this:");
-    //console.log(musicList);
-
-    var musicElt = MusicList.generateFromJSON(musicList); //generate elts
-
-    // add callbacks for every one so u can click on them to play a song
-    musicElt.children().each(function(index){ //go through all rooms
-
-        var room = $(this);
-
-        //console.log(index+"TH ROOM!!!!");
-        //console.log(room);
-
-        if(room.children) //if room has songs
+        if(room.name == roomName)
         {
-            room.children().each(function(index) {  //go through all elements under ul room {x}
-
-                var songList = $(this);
-
-                //console.log(index+"TH SUB-ROOM ELEMENT!!!");
-                //console.log(songList);
-
-                if(songList[0].localName == 'a') //then it's a title, clicking should play a random room's song.
-                {
-                    songList.addClass('clickable'); //show em its clickable
-
-                    songList.on('click', function(event) {
-                        var source = $(event.currentTarget);
-
-                        //get the list of songs for this title
-                        var roomElt = $($(source.parents()[0]).children().filter('ul')[0]);
-
-                        //console.log("roomElt:");
-                        //console.log(roomElt);
-
-                        var songLi = randomElt(roomElt.children()); //random list item
-
-                        //console.log("Random song:");
-                        //console.log(songLi);
-
-                        songLi.click();
-
-                    });
-                }
-                else //it's a song list, play the song associated with this element's {data()}.
-                {
-                    songList.children().each(function(index) { //go though all songs in a song list
-
-                        var song = $(this);
-
-                        song.addClass('clickable');
-
-                        song.on('click', function(event) {
-                            var source = $(event.currentTarget);
-
-                            var roomName = $(source[0].parentElement.parentElement).attr('class').split(' ')[0];
-                            var songName = source.data().name;
-
-                            //console.log("roomName and songName:");
-                            //console.log(roomName);
-                            //console.log(songName);
-
-                            var room = roomByName(roomName);
-                            var song = Song.songByName(songName, room);
-                            currentRoom = room;
-
-                            //console.log(source);
-                            //console.log(source.data());
-
-                            playSong(source.data().uri); //play our song's URI
-                            updateMusicViews(room, song)
-                        });
-
-                    });
-                }
-
-            });
+            return room;
         }
-
-
-    });
-
-    $('#music').append(musicElt);
-
-    return musicElt;
+    }
 }
 
 /***
@@ -477,11 +575,9 @@ function poll(data)
   {
     logData(data, wrap("(auto-poller)",'p'));
 
-    var mrr = mostRecentRoom(data);
+    var mrps = mostRecentPlaces(data);
 
-    console.log("Most recent room's name:"+mrr.name);
-
-    updateMusic(mrr);
+    updateMusic(mrps)
 
   }
 }
@@ -602,6 +698,10 @@ function poll(data)
     type: "GET",
     success: function(data) {
         updateMusicJSON(data);
+
+        if(!currentRoom) {
+            currentRoom = roomByName("ROOM_DEFAULT");
+        }
     },
   });
 
@@ -656,10 +756,10 @@ $('#delay-slider').trigger('change'); //to set up label
 
           if(data != '0')
           {
-            mrr = mostRecentRoom(data);
-            if(mrr)
+            var mrps = mostRecentPlaces(data);
+            if(mrps)
             {
-              updateMusic(mrr); //play song based off of most recent room
+              updateMusic(mrps); //play song based off of most recent places
             }
           }
       },
@@ -688,18 +788,17 @@ $('#random-room-song').on('click', function(e) {
 //someone wants a TOTALLY RANDOM song
 $('#random-room').on('click', function(e) {
 
-    var roomNames = Object.keys(musicJson.rooms);
-    console.log("All rooms:");
-    console.log(roomNames);
+    var floor = randomElt(musicList.floors);
 
-    var randomRoomName = roomNames[Math.floor(Math.random() * roomNames.length)];
+    while(floor.songs.length <= 0) //make sure we actually play something
+    {
+        var floor = randomElt(musicList.floors);
+    }
 
-    var randomRoom = roomByName(randomRoomName);
+    var song = randomElt(floor.songs)
 
-    console.log("Random room:");
-    console.log(randomRoom);
-
-    updateMusic(randomRoom);
+    playSong(song);
+    updateMusicViews(song);
 });
 
 $('#which-json')[0].addEventListener('keyup', function(event) {

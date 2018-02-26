@@ -36,16 +36,19 @@ except:
 if isinstance(sys.argv, list) and len(sys.argv) > 1:
 
     args = ""
+    settings.message = {}
 
     for i in range(1, len(sys.argv)):
-        args += sys.argv[i]
+        args += sys.argv[i].replace(' ','')
 
     print("Args: ")
     print(args)
 
-    argsl = args.split('=')
+    argsList = args.split(',')
 
-    settings.message = {argsl[0]: argsl[1]}  # room: room1, or level: level2
+    for arg in argsList:
+        argDict = arg.split('=')
+        settings.message[argDict[0]] = argDict[1]
 
 print(f'sys.argv: {repr(sys.argv)}')
 print(f'Script directory: {settings.script_path}')

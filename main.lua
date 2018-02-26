@@ -219,17 +219,17 @@ function Mod:immortality()
     Log("u got hurt :'(", i) i = i + 1
 end
 
---- Called to tell the server we changed levels.
-function Mod:levelchange()
+--- Called to tell the server we changed floors.
+function Mod:floorchange()
 
-    local i = settings.logging.LevelChangePos
+    local i = settings.logging.FloorChangePos
 
-    local level = Game():GetLevel()
-    local levelName = level:GetName()
+    local floor = Game():GetLevel()
+    local floorName = floor:GetName()
 
-    Log("Level name:" .. levelName, i) i = i + 1
+    Log("Floor name:" .. floorName, i) i = i + 1
 
-    send(('level='..levelName), true) --tell server we've changed levels
+    send(('floor=' .. floorName), true) --tell server we've changed floors
 end
 
 --- Called to tell the server we changed rooms.
@@ -241,6 +241,9 @@ function Mod:roomchange()
     local roomType = room:GetType()
     local typename = denum(RoomType, roomType)
 
+    local floor = Game():GetLevel()
+    local floorName = floor:GetName()
+
     if not lastRoomID then -- if this is the first room we've been to
         lastRoomID = roomType
     end
@@ -251,7 +254,7 @@ function Mod:roomchange()
 
     if lastRoomID ~= roomType then -- we should change music if we are in a different room
 
-        send(("room="..typename), true) -- tell the server we've changed rooms
+        send(("room=" .. typename..",floor="..floorName), true) -- tell the server we've changed rooms, send floor to be safe.
 
         Log("Sending that we've changed rooms!", i) i = i + 1
 
@@ -270,4 +273,4 @@ end
 
 Mod:AddCallback(ModCallbacks.MC_POST_PLAYER_INIT, Mod.start, EntityType.ENTITY_PLAYER)
 Mod:AddCallback(ModCallbacks.MC_POST_NEW_ROOM, Mod.roomchange, EntityType.ENTITY_PLAYER)
-Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, Mod.levelchange, EntityType.ENTITY_PLAYER)
+Mod:AddCallback(ModCallbacks.MC_POST_NEW_LEVEL, Mod.floorchange, EntityType.ENTITY_PLAYER)

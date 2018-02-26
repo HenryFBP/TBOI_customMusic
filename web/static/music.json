@@ -76,58 +76,79 @@
   },
   "floors": {
     "BasementI": [
-      ""
+      "henry_voice/basementI.mp3"
     ],
     "BasementII": [
-      ""
+      "henry_voice/basementII.mp3"
     ],
     "CellarI": [
-      ""
+      "henry_voice/cellarI.mp3"
     ],
     "CellarII": [
-      ""
+      "henry_voice/cellarII.mp3"
     ],
     "BurningBasementI": [
-      ""
+      "henry_voice/burningBasementI.mp3"
     ],
     "BurningBasementII": [
-      ""
+      "henry_voice/burningBasementII.mp3"
     ],
     "CavesI": [
-      ""
+      "henry_voice/cavesI.mp3"
     ],
     "CavesII": [
-      ""
+      "henry_voice/cavesII.mp3"
     ],
     "CatacombsI": [
-      ""
+      "henry_voice/catacombsI.mp3"
     ],
     "CatacombsII": [
-      ""
+      "henry_voice/catacombsII.mp3"
     ],
     "FloodedCavesI": [
-      ""
+      "henry_voice/floodedCavesI.mp3"
     ],
     "FloodedCavesII": [
-      ""
+      "henry_voice/floodedCavesII.mp3"
     ],
     "DepthsI": [
-      ""
+      "henry_voice/depthsI.mp3"
     ],
     "DepthsII": [
-      ""
+      "henry_voice/depthsII.mp3"
     ],
     "NecropolisI": [
-      ""
+      "henry_voice/necropolisI.mp3"
     ],
     "NecropolisII": [
-      ""
+      "henry_voice/necropolisII.mp3"
     ],
     "DankDepthsI": [
-      ""
+      "henry_voice/dankDepthsI.mp3"
     ],
     "DankDepthsII": [
-      ""
+      "henry_voice/dankDepthsII.mp3"
+    ],
+    "WombI": [
+      "henry_voice/wombI.mp3"
+    ],
+    "ScarredWombI": [
+      "henry_voice/scarredWombI.mp3"
+    ],
+    "UteroI": [
+      "henry_voice/uteroI.mp3"
+    ],
+    "WombII": [
+      "henry_voice/wombII.mp3"
+    ],
+    "ScarredWombII": [
+      "henry_voice/scarredWombII.mp3"
+    ],
+    "UteroII": [
+      "henry_voice/uteroII.mp3"
+    ],
+    "???": [
+      "___.mp3"
     ]
   }
 }

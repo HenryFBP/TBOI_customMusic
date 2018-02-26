@@ -25,7 +25,7 @@ settings.logging = {
 
     -- console print locations
     ['RoomChangePos'] = 6,
-    ['LevelChangePos'] = 9,
+    ['FloorChangePos'] = 9,
     ['HurtLinePos'] = 14,
 }
 

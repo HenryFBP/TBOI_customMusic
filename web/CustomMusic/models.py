@@ -34,9 +34,9 @@ class RoomEntry(models.Model):
         return "GO AWAY IM NOT IMPLEMENTED YET >:("
 
 
-class LevelEntry(models.Model):
+class FloorEntry(models.Model):
     """
-    Class that represents a single Level in TBOI.
+    Class that represents a single Floor in TBOI.
     """
     id = models.IntegerField(primary_key=True)
     type = models.CharField(max_length=200)

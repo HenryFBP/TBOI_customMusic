@@ -4,7 +4,7 @@
     "ROOM_NULL": [
     ],
     "ROOM_DEFAULT": [
-      "https://4lung.bandcamp.com/album/stage-four-lung-cancer"
+      "henry_voice/hello.mp3"
     ],
     "ROOM_SHOP": [
       "henry_voice/shop1.mp3",
@@ -72,6 +72,46 @@
     ],
     "ROOM_DICE": [
       "henry_voice/dice.mp3"
+    ]
+  },
+  "floors": {
+    "BasementI": [
+      "https://4lung.bandcamp.com/album/stage-four-lung-cancer"
+    ],
+    "BasementII": [
+      "https://lapfox.bandcamp.com/album/monarch-of-death-rave"
+    ],
+    "CellarI": [
+    ],
+    "CellarII": [
+    ],
+    "BurningBasementI": [
+    ],
+    "BurningBasementII": [
+    ],
+    "CavesI": [
+    ],
+    "CavesII": [
+    ],
+    "CatacombsI": [
+    ],
+    "CatacombsII": [
+    ],
+    "FloodedCavesI": [
+    ],
+    "FloodedCavesII": [
+    ],
+    "DepthsI": [
+    ],
+    "DepthsII": [
+    ],
+    "NecropolisI": [
+    ],
+    "NecropolisII": [
+    ],
+    "DankDepthsI": [
+    ],
+    "DankDepthsII": [
     ]
   }
 }
