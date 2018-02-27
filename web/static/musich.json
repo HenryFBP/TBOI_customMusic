@@ -4,74 +4,46 @@
     "ROOM_NULL": [
     ],
     "ROOM_DEFAULT": [
-      "henry_voice/hello.mp3"
     ],
     "ROOM_SHOP": [
-      "henry_voice/shop1.mp3",
-      "henry_voice/shop2.mp3",
-      {
-        "name": "Shop 3",
-        "uri": "henry_voice/shop3.mp3",
-        "album": "Henry Voice"
-      },
-      "henry_voice/shop4.mp3"
     ],
     "ROOM_ERROR": [
-      "henry_voice/error.mp3"
     ],
     "ROOM_TREASURE": [
-      "henry_voice/treasure.mp3"
     ],
     "ROOM_BOSS": [
-      "henry_voice/boss.mp3"
     ],
     "ROOM_MINIBOSS": [
-      "henry_voice/miniboss.mp3"
     ],
     "ROOM_SECRET": [
-      "henry_voice/secret.mp3"
     ],
     "ROOM_SUPERSECRET": [
-      "henry_voice/supersecret.mp3"
     ],
     "ROOM_ARCADE": [
-      "henry_voice/arcade.mp3"
     ],
     "ROOM_CURSE": [
-      "henry_voice/curse.mp3"
     ],
     "ROOM_CHALLENGE": [
-      "henry_voice/challenge.mp3"
     ],
     "ROOM_LIBRARY": [
-      "henry_voice/library.mp3"
     ],
     "ROOM_SACRIFICE": [
-      "henry_voice/sacrifice.mp3"
     ],
     "ROOM_DEVIL": [
-      "henry_voice/devil.mp3"
     ],
     "ROOM_ANGEL": [
-      "henry_voice/angel.mp3"
     ],
     "ROOM_DUNGEON": [
-      "henry_voice/dungeon.mp3"
     ],
     "ROOM_BOSSRUSH": [
-      "henry_voice/bossrush.mp3"
     ],
     "ROOM_ISAACS": [
-      "henry_voice/isaacs.mp3"
     ],
     "ROOM_BARREN": [
-      "henry_voice/barren.mp3"
     ],
     "ROOM_CHEST": [
-      "henry_voice/chest.mp3"
     ],
     "ROOM_DICE": [
-      "henry_voice/dice.mp3"
     ]
   },
   "floors": {
@@ -82,8 +54,10 @@
       "https://lapfox.bandcamp.com/album/monarch-of-death-rave"
     ],
     "CellarI": [
+      "https://murderchannel.bandcamp.com/album/the-metamorphosis-1st-form"
     ],
     "CellarII": [
+      "https://murderchannel.bandcamp.com/album/the-metamorphosis-2nd-form"
     ],
     "BurningBasementI": [
     ],
