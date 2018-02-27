@@ -397,6 +397,13 @@ function updateMusic(mrps) {
     console.log("Most recent places:");
     console.log(mrps);
 
+    if(!$('video')[0].paused) {//if music isn't paused
+        if(!$('#interrupt').checked) { //if we DON'T want to interrupt playback
+//            console.log("Not gonna interrupt your song.");
+            return; //then quit
+        }
+    }
+
     if(currentRoom.name == "ROOM_DEFAULT") { //we want to play the floor's music as it's the default floor
 
         console.log("User is in default room. playing random song from this Floor:");
@@ -425,6 +432,12 @@ function updateMusic(mrps) {
   */
 function updateMusicViews(song)
 {
+    song = song || null;
+
+    if(!song) {
+        console.log("Song is null.");
+        return;
+    }
     console.log("passed this song:");
     console.log(song);
 
@@ -463,8 +476,15 @@ function playSongByPlace(place) {
   */
 function playSong(song) {
 
-    if(!song || !song.uri) {
-        return;
+    song = song || null;
+
+    while(!song) { //if song doesn't exist, get a new one.
+        console.log("Song doesn't exist. The Floor probably doesn't have any. Gonna choose a random one.");
+        var floor = randomElt(musicList.floors);
+        song = randomElt(floor.songs);
+        if(song) {
+            updateMusicViews(song);
+        }
     }
 
     var uri = song.uri;
