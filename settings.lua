@@ -15,7 +15,7 @@ settings.conf = {
 
 settings.logging = {
     -- debug settings
-    ['debug'] = true,
+    ['debug'] = false,
 
     -- console fonts
     ['XPos'] = 50,
