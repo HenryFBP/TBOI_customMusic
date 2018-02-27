@@ -1,31 +1,17 @@
+import sys
+import os
+import time
+
 try:
-    import sys
-    import os
-    import time
-except Exception as e:
+    import settings
+except ImportError as e:
     print(e)
-    input("Couldn't import basic modules.")
+    input("Couldn't import settings module.")
 
 
 def wait(t=60 * 10, m="Waiting 'cuz debug mode is on."):
     print(m)
     time.sleep(t)
-
-
-class settings:
-    debug = False
-
-    os_type = sys.platform
-    mod_name = 'CustomMusic'
-    runtime = 'python'
-
-    host = 'localhost'
-    port = 8000
-
-    server_script = '/web/manage.py'
-    script_path = os.path.dirname(sys.argv[0])
-
-    message = {"defaultsettings": "message"}
 
 
 try:
@@ -39,7 +25,7 @@ if isinstance(sys.argv, list) and len(sys.argv) > 1:
     settings.message = {}
 
     for i in range(1, len(sys.argv)):
-        args += sys.argv[i].replace(' ','')
+        args += sys.argv[i].replace(' ', '')
 
     print("Args: ")
     print(args)
@@ -106,6 +92,7 @@ def sendMessage(message, host=settings.host, port=settings.port):
 
     if settings.debug:
         wait()
+
 
 sendMessage(settings.message)
 
