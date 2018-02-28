@@ -3,6 +3,7 @@ import os
 import time
 
 import settings
+import messenger
 
 from watchdog.observers import Observer
 from watchdog.events import *
@@ -35,6 +36,12 @@ class MyHandler(FileSystemEventHandler):
         self.most_recent_data = data #record that we have a new message
 
         print(self.most_recent_data)
+
+        try:
+            messenger.sendMessage(''.join(data)) #send to server
+        except Exception as e:
+            print("Couldn't send to server!")
+            print(e)
 
 
 if __name__ == '__main__':
