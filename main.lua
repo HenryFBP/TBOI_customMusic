@@ -114,10 +114,17 @@ function PrintText(thing, x, y)
 end
 
 
+function startServer()
+    local command = settings.paths.runtime
+
+    --io.popen()
+end
+
 ---
 -- Sends a message to a file.
 function sendToFile(message)
     local i = settings.logging.MessageFilePos
+    local path = _moddir..settings.paths.messages_file
 
     Log('sendToFile()', i) i = i + 1
     Log("writing '"..message.."' to '"..path.."'",i) i = i + 1
