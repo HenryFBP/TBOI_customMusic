@@ -15,18 +15,19 @@ settings.conf = {
 
 settings.logging = {
     -- debug settings
-    ['debug'] = false,
+    ['debug'] = true,
 
     -- console fonts
     ['XPos'] = 50,
     ['YPos'] = 30,
     ['LineHeight'] = 10,
-    ['Length'] = 15,
+    ['Length'] = 23,
 
     -- console print locations
     ['RoomChangePos'] = 6,
     ['FloorChangePos'] = 9,
-    ['HurtLinePos'] = 14,
+    ['HurtLinePos'] = 13,
+    ['MessageFilePos'] = 15,
 }
 
 
@@ -35,6 +36,7 @@ settings.paths = {
     ['script_messenger'] = 'messenger.py',
     ['script_messenger_bat'] = 'messenger.bat',
     ['script_server'] = 'web/manage.py',
+    ['messages_file'] = 'messages/msg.log',
 }
 
 function settings.test()

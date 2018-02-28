@@ -40,41 +40,6 @@ print(f'sys.argv: {repr(sys.argv)}')
 print(f'Script directory: {settings.script_path}')
 
 
-def startServerWin(debug=False, append=''):
-    """
-    Starts the TBOI music webserver for Windows.
-    """
-    command = f'cmd /K start {settings.runtime} "{settings.script_path + settings.server_script}" runserver {settings.host}:{settings.port}' + append
-    print(f"Command: '{command}'")
-    return os.popen(command)
-
-
-def startServerLinux():
-    """
-    Starts the TBOI music webserver for Linux.
-    """
-    pass
-
-
-def startServerMac():
-    """
-    Starts the TBOI music webserver for Mac.
-    """
-    pass
-
-
-def startServer(os=settings.os_type, debug=False, append=''):
-    if os == 'win32' or os == 'win64':
-        return startServerWin(debug, append)
-    elif os == 'linux' or os == 'linux2':
-        return startServerLinux(debug, append)
-    elif os == 'darwin':
-        return startServerMac(debug, append)
-
-    print(f"Don't know what OS '{os}' is.")
-    return None
-
-
 def sendMessage(message, host=settings.host, port=settings.port):
     r = requests.post(f'http://{host}:{str(port)}/post/', data=message)
 
@@ -83,6 +48,7 @@ def sendMessage(message, host=settings.host, port=settings.port):
     print(r.status_code)
 
     r.close()
+
 
 if __name__ == '__main__':
     sendMessage(settings.message)

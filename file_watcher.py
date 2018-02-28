@@ -46,6 +46,10 @@ class MyHandler(FileSystemEventHandler):
 
 if __name__ == '__main__':
 
+    print("Hello. I am a file watcher.")
+    print("I watch the '"+settings.messages_file+"' for changes.")
+    print("When I find a change, I tell the web server.")
+
     event_handler = MyHandler()
 
     observer = Observer()
