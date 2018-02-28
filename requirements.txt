@@ -8,3 +8,4 @@ You can install these using `pip` or `easy_install`.
 - requests
 - django
 - django-cors-headers
+- watchdog

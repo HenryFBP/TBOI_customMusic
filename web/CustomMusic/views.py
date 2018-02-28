@@ -167,14 +167,17 @@ def album_to_MP3s(request: HttpRequest):
 def post(request: HttpRequest):
     data = request.POST
 
+    print("got dis:")
+    print(data)
+
     if 'room' in data:
         r = RoomEntry(type=data['room'])
-        print(f"Thanks for telling us you're in room '{repr(r)}'!")
+        print(f"Thanks for telling us you're in room '{str(r)}'!")
         r.save()
 
     if 'floor' in data:
         l = FloorEntry(type=data['floor'])
-        print(f"Thanks for telling us you're in floor '{repr(l)}'!")
+        print(f"Thanks for telling us you're in floor '{str(l)}'!")
         l.save()
 
     return HttpResponse(json.dumps(request.POST))  # spit it back out at em

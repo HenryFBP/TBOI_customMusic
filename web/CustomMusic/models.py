@@ -21,7 +21,10 @@ class RoomEntry(models.Model):
     time = models.IntegerField(default=rightnow)
 
     def __str__(self):
-        return f"[{id} @ {time}]: {type} "
+        return f"[{str(id)} @ {str(time)}]: {str(type)} "
+
+    def __repr__(self):
+        return str(self)
 
     def as_dict(self):
         return {
@@ -43,7 +46,10 @@ class FloorEntry(models.Model):
     time = models.IntegerField(default=rightnow)
 
     def __str__(self):
-        return f"{id} @ {time}: {type}"
+        return f"[{str(id)} @ {str(time)}]: {str(type)} "
+
+    def __repr__(self):
+        return str(self)
 
     def as_dict(self):
         return {

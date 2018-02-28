@@ -47,9 +47,6 @@ else
     Log(([[Moddir: "]] .. _moddir .. [["]]), i) i = i + 1
 end
 
-local Mod = RegisterMod(settings.conf.ModName, 1)
-
-
 local _os = "unknown"
 _last_executed = "Nothing last run."
 
@@ -114,6 +111,27 @@ function PrintText(thing, x, y)
 end
 
 
+function startServer()
+    local command = settings.paths.runtime..[[ "]].._moddir..settings.paths.script_startup..[["]]
+
+    return io.popen(command, "r")
+end
+
+startServer()
+
+---
+-- Sends a message to a file.
+function sendToFile(message)
+    local i = settings.logging.MessageFilePos
+    local path = _moddir..settings.paths.messages_file
+
+    Log('sendToFile()', i) i = i + 1
+    Log("writing '"..message.."' to '"..path.."'",i) i = i + 1
+
+    local f = io.open(path, "w+")
+    f:write(message)
+    f:close()
+end
 
 --- sendCMD sends a command and opens a command-line window.
 -- Interrupts game, is annoying.
@@ -185,6 +203,8 @@ function getkeys(t)
     return k
 end
 
+local Mod = RegisterMod(settings.conf.ModName, 1)
+
 function Mod:onRender()
 
     local x = Isaac.GetPlayer(0).Position.X
@@ -217,6 +237,9 @@ function Mod:immortality()
     p:SetFullHearts()
 
     Log("u got hurt :'(", i) i = i + 1
+    Log(_moddir .. settings.paths.messages_file, i) i = i + 1
+
+    --sendToFile("[debug] got hurt at "..lib.time())
 end
 
 --- Called to tell the server we changed floors.
@@ -229,7 +252,7 @@ function Mod:floorchange()
 
     Log("Floor name:" .. floorName, i) i = i + 1
 
-    send(('floor=' .. floorName), true) --tell server we've changed floors
+    sendToFile(('floor=' .. floorName)) --tell server we've changed floors
 end
 
 --- Called to tell the server we changed rooms.
@@ -254,7 +277,7 @@ function Mod:roomchange()
 
     if lastRoomID ~= roomType then -- we should change music if we are in a different room
 
-        send(("room=" .. typename..",floor="..floorName), true) -- tell the server we've changed rooms, send floor to be safe.
+        sendToFile(("room=" .. typename..",floor="..floorName)) -- tell the server we've changed rooms, send floor to be safe.
 
         Log("Sending that we've changed rooms!", i) i = i + 1
 
