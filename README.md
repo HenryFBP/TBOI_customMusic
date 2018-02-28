@@ -38,7 +38,7 @@ Yes, yes you do.
 
 - Install Python 3.6
 - Install the following packages with pip:
-    - `pip install requests django django-cors-headers`
+    - `pip install pprint requests django django-cors-headers watchdog`
 
 
 ## If I make this into a twitch app will you sue me?
