@@ -2,6 +2,7 @@ import os
 import sys
 
 import settings
+import lib
 
 
 def startServerWin(debug=False, append=''):
@@ -72,3 +73,6 @@ if __name__ == '__main__':
     startFileWatcher()
 
     startServer()
+
+    if settings.debug:
+        lib.wait()

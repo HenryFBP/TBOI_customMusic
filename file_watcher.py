@@ -4,9 +4,16 @@ import time
 
 import settings
 import messenger
+import lib
 
-from watchdog.observers import Observer
-from watchdog.events import *
+try:
+    from watchdog.observers import Observer
+    from watchdog.events import *
+except ImportError as e:
+    print("Couldn't import libraries:")
+    print(e)
+    lib.wait()
+
 
 print(os.path.dirname(sys.argv[0]))
 

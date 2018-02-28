@@ -167,6 +167,9 @@ def album_to_MP3s(request: HttpRequest):
 def post(request: HttpRequest):
     data = request.POST
 
+    print("got dis:")
+    print(data)
+
     if 'room' in data:
         r = RoomEntry(type=data['room'])
         print(f"Thanks for telling us you're in room '{str(r)}'!")

@@ -47,9 +47,6 @@ else
     Log(([[Moddir: "]] .. _moddir .. [["]]), i) i = i + 1
 end
 
-local Mod = RegisterMod(settings.conf.ModName, 1)
-
-
 local _os = "unknown"
 _last_executed = "Nothing last run."
 
@@ -115,10 +112,12 @@ end
 
 
 function startServer()
-    local command = settings.paths.runtime
+    local command = settings.paths.runtime..[[ "]].._moddir..settings.paths.script_startup..[["]]
 
-    --io.popen()
+    return io.popen(command, "r")
 end
+
+startServer()
 
 ---
 -- Sends a message to a file.
@@ -204,6 +203,8 @@ function getkeys(t)
     return k
 end
 
+local Mod = RegisterMod(settings.conf.ModName, 1)
+
 function Mod:onRender()
 
     local x = Isaac.GetPlayer(0).Position.X
@@ -238,7 +239,7 @@ function Mod:immortality()
     Log("u got hurt :'(", i) i = i + 1
     Log(_moddir .. settings.paths.messages_file, i) i = i + 1
 
-    sendToFile("[debug] got hurt at "..lib.time())
+    --sendToFile("[debug] got hurt at "..lib.time())
 end
 
 --- Called to tell the server we changed floors.
@@ -251,7 +252,7 @@ function Mod:floorchange()
 
     Log("Floor name:" .. floorName, i) i = i + 1
 
-    sendToFile('floor=' .. floorName) --tell server we've changed floors
+    sendToFile(('floor=' .. floorName)) --tell server we've changed floors
 end
 
 --- Called to tell the server we changed rooms.
@@ -276,7 +277,7 @@ function Mod:roomchange()
 
     if lastRoomID ~= roomType then -- we should change music if we are in a different room
 
-        sendToFile("room=" .. typename..",floor="..floorName) -- tell the server we've changed rooms, send floor to be safe.
+        sendToFile(("room=" .. typename..",floor="..floorName)) -- tell the server we've changed rooms, send floor to be safe.
 
         Log("Sending that we've changed rooms!", i) i = i + 1
 

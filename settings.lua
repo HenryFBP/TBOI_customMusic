@@ -34,6 +34,7 @@ settings.logging = {
 settings.paths = {
     ['runtime'] = 'python',
     ['script_messenger'] = 'messenger.py',
+    ['script_startup'] = 'startup.py',
     ['script_messenger_bat'] = 'messenger.bat',
     ['script_server'] = 'web/manage.py',
     ['messages_file'] = 'messages/msg.log',
