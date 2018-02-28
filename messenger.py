@@ -76,24 +76,15 @@ def startServer(os=settings.os_type, debug=False, append=''):
 
 
 def sendMessage(message, host=settings.host, port=settings.port):
-    try:
-        r = requests.post(f'http://{host}:{str(port)}/post/', data=message)
+    r = requests.post(f'http://{host}:{str(port)}/post/', data=message)
 
-        print(f"Sent '{message}' to '{host}:{str(port)}'")
+    print(f"Sent '{message}' to '{host}:{str(port)}'")
 
-        print(r.status_code)
+    print(r.status_code)
 
-        r.close()
+    r.close()
 
-    except Exception as e:
-        print(f'I\'m going to assume that the "{settings.mod_name}" server is NOT running, so I\'m going to start it.')
-        print('')
-        startServer(debug=settings.debug)
+if __name__ == '__main__':
+    sendMessage(settings.message)
 
-    if settings.debug:
-        wait()
-
-
-sendMessage(settings.message)
-
-sys.exit(1)
+    sys.exit(1)
