@@ -1,5 +1,7 @@
 disable.it
 *.tmp
+*.sqlite3
+messages/
 
 .idea/
 
