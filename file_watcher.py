@@ -12,6 +12,7 @@ try:
 except ImportError as e:
     print("Couldn't import libraries:")
     print(e)
+    lib.log(str(e))
     lib.wait()
 
 

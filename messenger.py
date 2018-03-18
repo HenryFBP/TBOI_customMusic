@@ -1,16 +1,13 @@
 import sys
-
-try:
-    import settings
-    import lib
-except ImportError as e:
-    print(e)
-    input("Couldn't import settings module.")
+import lib
+import settings
 
 try:
     import requests
-except:
+except Exception as e:
+    lib.log(str(e))
     lib.wait(m="'requests' library not found.\nTry 'pip install requests'?")
+    
 
 def sendMessage(message, host=settings.host, port=settings.port):
 
@@ -28,6 +25,10 @@ def sendMessage(message, host=settings.host, port=settings.port):
 
 
 if __name__ == '__main__':
-    sendMessage(settings.message)
+    try:        
+        sendMessage(settings.message)
 
-    sys.exit(1)
+        sys.exit(1)
+    except Exception as e:
+        lib.log(str(e))
+

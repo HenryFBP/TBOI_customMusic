@@ -70,9 +70,13 @@ def startFileWatcher(OS=settings.os_type, dir=None, append='', debug=False):
 
 
 if __name__ == '__main__':
-    startFileWatcher()
+    try:
+        startFileWatcher()
 
-    startServer()
+        startServer()
 
-    if settings.debug:
-        lib.wait()
+        if settings.debug:
+            lib.wait()
+            
+    except Exception as e:
+        lib.log(str(e))

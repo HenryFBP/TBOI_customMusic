@@ -1,4 +1,21 @@
+import os.path
 import time
+
+import settings
+
+
+def log(msg, path=os.path.join(settings.script_path, 'log.txt')):
+    if os.path.isfile(path):
+        file = open(path, 'a')
+    else:
+        file = open(path, 'w+')
+
+    file.write(f"[{str(time.time())}]\n")
+    file.write(msg)
+    file.write("\n\n")
+
+    file.close()
+
 
 def wait(t=60 * 10, m="Waiting 'cuz debug mode is on."):
     print(m)
@@ -16,9 +33,9 @@ def strtodict(string: str, delim=',', eq="="):
 
     d = {}
 
-    string = string\
-        .replace("{",'')\
-        .replace("}",'')
+    string = string \
+        .replace("{", '') \
+        .replace("}", '')
 
     ents = string.split(delim)
 
@@ -31,7 +48,6 @@ def strtodict(string: str, delim=',', eq="="):
 
 
 if __name__ == '__main__':
-
     x = "potato=good,tomato=yuck"
 
     print(x)
